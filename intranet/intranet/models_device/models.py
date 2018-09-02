@@ -3,7 +3,6 @@ from django.db import models
 # Create your models here.
 
 class ModelDevices(models.Model):
-    id = models.AutoField(db_index=True, primary_key=True)
     type = models.CharField(max_length=30, verbose_name='Тип устройства.')
     model = models.CharField(max_length=30, help_text='Модель устройства.')
     ports = models.PositiveSmalllntegerField(help_text='Количество портов.')
@@ -25,10 +24,18 @@ class ModelDevices(models.Model):
 
 
 class Device(models.Model):
-    id = models.AutoField(db_index=True, primary_key=True)
     model = models.ForeignKey(ModelDevices, null=True, on_delete=models.SET_NULL)
     ip = models.IPAddressField(unique=True)
-    up_connect_ip = models.IPAddressField()
     ports_connect = models.CharField()
     comment = models.TextField(blank=True)
     update = models.DateTimeField(auto_now=True)
+
+
+class ConnectionOnDevice(models.Model):
+    id_dev = models.ForeignKey(Device, null=True, on_delete=models.SET_NULL, 
+        help_text='ID оборудования, к которому подключен клиент/устройство.')
+    port = models.PositiveSmalllntegerField(help_text='Порт подключения.')
+    connected = models.CharField(max_length=30, help_text='Что подключено к порту.')
+    comment = models.TextField(blank=True)
+    date = models.DateTimeField(auto_now_add=True, help_text='Дата добавления.')
+    update = models.DateTimeField(auto_now=True, help_text='Дата изменения.')
