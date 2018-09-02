@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'models_device',
+    'connection_on_device',
 ]
 
 MIDDLEWARE = [

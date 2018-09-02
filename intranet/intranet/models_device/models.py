@@ -5,7 +5,7 @@ from django.db import models
 class ModelDevices(models.Model):
     type = models.CharField(max_length=30, verbose_name='Тип устройства.')
     model = models.CharField(max_length=30, help_text='Модель устройства.')
-    ports = models.PositiveSmalllntegerField(help_text='Количество портов.')
+    ports = models.PositiveSmallIntegerField(help_text='Количество портов.')
     template = models.CharField(max_length=50)
     comment = models.TextField(blank=True)
 
@@ -25,17 +25,8 @@ class ModelDevices(models.Model):
 
 class Device(models.Model):
     model = models.ForeignKey(ModelDevices, null=True, on_delete=models.SET_NULL)
-    ip = models.IPAddressField(unique=True)
-    ports_connect = models.CharField()
+    ip = models.GenericIPAddressField(unique=True)
+    up_connect_ip = models.GenericIPAddressField()
     comment = models.TextField(blank=True)
     update = models.DateTimeField(auto_now=True)
 
-
-class ConnectionOnDevice(models.Model):
-    id_dev = models.ForeignKey(Device, null=True, on_delete=models.SET_NULL, 
-        help_text='ID оборудования, к которому подключен клиент/устройство.')
-    port = models.PositiveSmalllntegerField(help_text='Порт подключения.')
-    connected = models.CharField(max_length=30, help_text='Что подключено к порту.')
-    comment = models.TextField(blank=True)
-    date = models.DateTimeField(auto_now_add=True, help_text='Дата добавления.')
-    update = models.DateTimeField(auto_now=True, help_text='Дата изменения.')
