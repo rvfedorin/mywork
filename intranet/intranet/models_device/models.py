@@ -40,5 +40,5 @@ class Device(models.Model):
         return _text
 
     class Meta:
-        verbose_name = 'Установленное борудование'
-        verbose_name_plural = 'Установленное борудование'
+        verbose_name = 'Установленное оборудование'
+        verbose_name_plural = 'Установленное оборудование'
