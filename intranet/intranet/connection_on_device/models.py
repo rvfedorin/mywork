@@ -11,3 +11,11 @@ class ConnectionOnDevice(models.Model):
     comment = models.TextField(blank=True)
     date = models.DateTimeField(auto_now_add=True, help_text='Дата добавления.')
     update = models.DateTimeField(auto_now=True, help_text='Дата изменения.')
+
+    def __str__(self):
+        _text = f"{self.connected} on {self.id_dev.ip} port {self.port}  {self.comment}"
+        return _text
+
+    class Meta:
+    	verbose_name = "Подключенное оборудование/клиенты"
+    	verbose_name_plural = "Подключенное оборудование/клиенты"

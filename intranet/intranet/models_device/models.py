@@ -1,7 +1,7 @@
 from django.db import models
 
 # My 
-from cities.models import Cities
+from cities.models import Cities, REGIONS
 
 # Create your models here.
 
@@ -36,7 +36,7 @@ class Device(models.Model):
     update = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        _text = f"{self.ip}({self.model.model}) connect from: {self.up_connect_ip};  {self.city}; Comment: {self.comment}; "
+        _text = f"{REGIONS[self.city.region-1][1]} {self.city.city} {self.ip} ({self.model.model}) connect from: {self.up_connect_ip}; Comment: {self.comment}; "
         return _text
 
     class Meta:
