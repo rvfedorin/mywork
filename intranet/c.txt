@@ -1,2 +1,2 @@
 C:\Users\Wolf\Documents\GitHub\venv_intranet\Scripts\django-admin.py
-super user: wolf:12345
+super user: admin:admin

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'models_device',
     'connection_on_device',
+    'cities',
 ]
 
 MIDDLEWARE = [
