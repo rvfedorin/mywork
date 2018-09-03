@@ -13,7 +13,7 @@ class ConnectionOnDevice(models.Model):
     update = models.DateTimeField(auto_now=True, help_text='Дата изменения')
 
     def __str__(self):
-        _text = f"{self.connected} on {self.id_dev.ip} port {self.port}  {self.comment}"
+        _text = f"{self.id_dev.city.city} --> {self.connected} on {self.id_dev.ip} port {self.port};  {self.comment}"
         return _text
 
     class Meta:
