@@ -21,7 +21,7 @@ class Cities(models.Model):
 
 
     def __str__(self):
-        _text = f"{self.city} ({self.city_prefix}) {REGIONS[self.region-1][1]};  {self.comment}"
+        _text = f"{REGIONS[self.region-1][1]} {self.city} ({self.city_prefix});  {self.comment}"
         return _text
 
     class Meta:

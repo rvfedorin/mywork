@@ -6,9 +6,9 @@ from cities.models import Cities, REGIONS
 # Create your models here.
 
 class ModelDevices(models.Model):
-    type = models.CharField(max_length=30, verbose_name='Тип устройства.')
-    model = models.CharField(max_length=30, help_text='Модель устройства.')
-    ports = models.PositiveSmallIntegerField(help_text='Количество портов.')
+    type = models.CharField(max_length=30, verbose_name='тип устройства')
+    model = models.CharField(max_length=30, help_text='модель устройства')
+    ports = models.PositiveSmallIntegerField(help_text='количество портов')
     template = models.CharField(max_length=50)
     comment = models.TextField(blank=True)
 
@@ -28,10 +28,10 @@ class ModelDevices(models.Model):
 
 
 class Device(models.Model):
-    model = models.ForeignKey(ModelDevices, null=True, on_delete=models.SET_NULL)
-    ip = models.GenericIPAddressField(unique=True)
-    up_connect_ip = models.GenericIPAddressField()
-    city = models.ForeignKey(Cities, on_delete=models.PROTECT)
+    model = models.ForeignKey(ModelDevices, null=True, on_delete=models.SET_NULL, help_text='модель устройства')
+    ip = models.GenericIPAddressField(unique=True, help_text='IP устройства')
+    up_connect_ip = models.GenericIPAddressField(help_text='IP устройства от которого подключено')
+    city = models.ForeignKey(Cities, on_delete=models.PROTECT, help_text='город подключения')
     comment = models.TextField(blank=True)
     update = models.DateTimeField(auto_now=True)
 
