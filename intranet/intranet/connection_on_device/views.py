@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 
 from connection_on_device.models import ConnectionOnDevice
 from models_device.models import Device
@@ -11,16 +11,22 @@ def index(request):
     all_dev = Device.objects.all()
     for dev in all_dev:
         id_dev = dev.pk
-        _result += f'<a href=/connection/{id_dev}/>{dev}</a><br>'
+        _result += f'<a style="text-decoration:none;" href="/connection/{id_dev}/">{dev.city}&nbsp;&nbsp;&nbsp; {dev.ip} {dev.model.model}</a><br>'
 
     return HttpResponse(_result)
 
 
 def on_device(request, id_dev):
     _result = ''
-    dev = Device.objects.get(pk=id_dev)
+    try:
+        dev = Device.objects.get(pk=id_dev)
+    except Device.DoesNotExist:
+        raise Http404('Device not found!')
+
     all_connection = ConnectionOnDevice.objects.filter(id_dev=dev)
-    _result += f'connection on: {dev.ip}<br>'
+    
+
+    _result += f'connection on: {dev.ip} ({dev.model.type})<br>'
     for connection in all_connection:
         vlan = f'vlan:{connection.vlan}'
         if connection.connected == 'UP':
