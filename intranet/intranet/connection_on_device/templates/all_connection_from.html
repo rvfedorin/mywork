@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Подключения от </title>
+	</head>
+	<body>
+		<table  border="1" cellpadding="2">
+		{% for dev, color, connection in connections %}
+		
+			<tr>
+				<td bgcolor="{{ color }}">
+					{{ dev.model.type }}&nbsp;{{ dev.model.model }}
+				</td>
+				<td>
+					сети&nbsp;
+				</td>				
+				<td bgcolor="{{ color }}">
+					<a style="text-decoration:none;" href="/connection/{{ dev.pk }}/path">{{ dev.ip }}</a>
+				</td>
+			</tr>
+			{% for connect in connection %}
+			<tr>
+				<td>
+					{{ connect.connected }}
+				</td>
+				<td>
+					{{ connect.ip_client }}
+				</td>
+				<td>
+					{{ connect.port }}port{{ connect.vlan }}
+				</td>
+			</tr>
+			{% endfor %}
+		
+		{% endfor %}
+		</table>
+	</body>
+</html>
