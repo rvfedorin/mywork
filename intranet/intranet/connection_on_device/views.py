@@ -48,12 +48,14 @@ def on_device(request, id_dev):
 
 def path_to(request, id_dev):
 
+    COLORS = {"Switch":'Lime', "RWR":'Gold'}
+
     try:
         dev = Device.objects.get(pk=id_dev)
     except Device.DoesNotExist:
         raise Http404('Device not found!')
 
-    path = f'<b>{dev.ip}</b>-{dev.incoming_port}port--{dev.up_connect_port}port-<b>{dev.up_connect_ip}</b>'
+    path = f'<b><font color="{COLORS[dev.model.type]}">{dev.ip}</font></b>-{dev.incoming_port}port--{dev.up_connect_port}port'
 
     if_loop = 0
     while True:
@@ -66,10 +68,10 @@ def path_to(request, id_dev):
         
 
         if str(dev.up_connect_ip) == '255.255.255.255':
-            path += f'-{dev.incoming_port}port--<b>cisco</b>'
+            path += f'-<b><font color="{COLORS[dev.model.type]}">{dev.ip}</font></b>-{dev.incoming_port}port--<b>cisco</b>'
             return HttpResponse(path)
         else:
-            path += f'-{dev.incoming_port}port--{dev.up_connect_port}port-<b>{dev.up_connect_ip}</b>'
+            path += f'-<b><font color="{COLORS[dev.model.type]}">{dev.ip}</font></b>-{dev.incoming_port}port--{dev.up_connect_port}port'
 
         if if_loop > 15:
             return HttpResponse('path not found')
