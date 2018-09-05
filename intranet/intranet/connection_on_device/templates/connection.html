@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Подключения</title>
+	</head>
+	<body>
+		<table  border="1" cellpadding="2">
+			<tr>
+				<td bgcolor="Lime">
+					{{ dev.model.type }}&nbsp;{{ dev.model.model }}
+				</td>
+				<td>
+					сети&nbsp;
+				</td>				
+				<td bgcolor="Lime">
+					<a style="text-decoration:none;" href="/connection/{{ dev.pk }}/path">{{ dev.ip }}</a>
+				</td>
+			</tr>
+			{% for connection in connections %}
+			<tr>
+				<td>
+					{{ connection.connected }}
+				</td>
+				<td>
+					{{ connection.ip_client }}
+				</td>
+				<td>
+					{{ connection.port }}port{{ connection.vlan }}
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</body>
+</html>

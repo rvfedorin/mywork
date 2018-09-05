@@ -17,24 +17,61 @@ def index(request):
 
 
 def on_device(request, id_dev):
-    _result = ''
+
     try:
         dev = Device.objects.get(pk=id_dev)
     except Device.DoesNotExist:
         raise Http404('Device not found!')
 
     all_connection = ConnectionOnDevice.objects.filter(id_dev=dev)
-    
 
-    _result += f'connection on: {dev.ip} ({dev.model.type})<br>'
+    connections = []
+
     for connection in all_connection:
-        vlan = f'vlan:{connection.vlan}'
-        if connection.connected == 'UP':
-            connected = f'UP to {dev.up_connect_port} port on {dev.model.type} {dev.up_connect_ip}'
-        else:
-            connected = connection.connected
-        _result += '&nbsp;'*25 + f'----> port {connection.port}: "{connected}" {vlan if connection.vlan != "Null" else ""} {connection.ip_client}<br>'
+        vlan = f'/{connection.vlan}vlan'
 
-    return HttpResponse(_result)
+        if connection.connected == 'UP':
+            connection.connected = f'UP to {dev.up_connect_port} port on {dev.model.type} {dev.up_connect_ip}'
+ 
+        if connection.vlan != "Null":
+            connection.vlan = vlan
+        else:
+            connection.vlan = ""
+
+        connections.append(connection)
+    connections = sorted(connections, key=lambda x: x.port)
+    
+    return render(request, "connection.html", {
+        "connections":connections, 
+        "dev":dev,
+        })
+
+def path_to(request, id_dev):
+
+    try:
+        dev = Device.objects.get(pk=id_dev)
+    except Device.DoesNotExist:
+        raise Http404('Device not found!')
+
+    path = f'<b>{dev.ip}</b>-{dev.incoming_port}port--{dev.up_connect_port}port-<b>{dev.up_connect_ip}</b>'
+
+    if_loop = 0
+    while True:
+        if_loop += 1
+        try:
+            dev = Device.objects.get(ip=dev.up_connect_ip)
+        except Device.DoesNotExist:
+            raise Http404('Device not found!')
+
+        
+
+        if str(dev.up_connect_ip) == '255.255.255.255':
+            path += f'-{dev.incoming_port}port--<b>cisco</b>'
+            return HttpResponse(path)
+        else:
+            path += f'-{dev.incoming_port}port--{dev.up_connect_port}port-<b>{dev.up_connect_ip}</b>'
+
+        if if_loop > 15:
+            return HttpResponse('path not found')
 
 
