@@ -6,6 +6,9 @@ from models_device.models import Device
 
 # Create your views here.
 
+COLORS = {"Switch":'Lime', "RWR":'Yellow', "UBNT":'Gold'}
+
+
 def index(request):
     _result = ''
     all_dev = Device.objects.all()
@@ -44,18 +47,18 @@ def on_device(request, id_dev):
     return render(request, "connection.html", {
         "connections":connections, 
         "dev":dev,
+        "color":COLORS[dev.model.type],
         })
 
 def path_to(request, id_dev):
-
-    COLORS = {"Switch":'Lime', "RWR":'Gold'}
 
     try:
         dev = Device.objects.get(pk=id_dev)
     except Device.DoesNotExist:
         raise Http404('Device not found!')
 
-    path = f'<b><font color="{COLORS[dev.model.type]}">{dev.ip}</font></b>-{dev.incoming_port}port--{dev.up_connect_port}port'
+    path = [(dev, COLORS[dev.model.type])]
+    to_dev = dev
 
     if_loop = 0
     while True:
@@ -64,14 +67,16 @@ def path_to(request, id_dev):
             dev = Device.objects.get(ip=dev.up_connect_ip)
         except Device.DoesNotExist:
             raise Http404('Device not found!')
-
         
 
         if str(dev.up_connect_ip) == '255.255.255.255':
-            path += f'-<b><font color="{COLORS[dev.model.type]}">{dev.ip}</font></b>-{dev.incoming_port}port--<b>cisco</b>'
-            return HttpResponse(path)
+            path.append((dev, COLORS[dev.model.type]))
+            return render(request, "path_to_device.html", {
+                "path": path,
+                "to_dev": to_dev,
+                })
         else:
-            path += f'-<b><font color="{COLORS[dev.model.type]}">{dev.ip}</font></b>-{dev.incoming_port}port--{dev.up_connect_port}port'
+            path.append((dev, COLORS[dev.model.type]))
 
         if if_loop > 15:
             return HttpResponse('path not found')

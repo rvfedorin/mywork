@@ -7,13 +7,13 @@
 	<body>
 		<table  border="1" cellpadding="2">
 			<tr>
-				<td bgcolor="Lime">
+				<td bgcolor="{{ color }}">
 					{{ dev.model.type }}&nbsp;{{ dev.model.model }}
 				</td>
 				<td>
 					сети&nbsp;
 				</td>				
-				<td bgcolor="Lime">
+				<td bgcolor="{{ color }}">
 					<a style="text-decoration:none;" href="/connection/{{ dev.pk }}/path">{{ dev.ip }}</a>
 				</td>
 			</tr>

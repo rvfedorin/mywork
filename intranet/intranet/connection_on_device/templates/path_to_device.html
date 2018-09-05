@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Путь до {{ to_dev.ip }}</title>
+	</head>
+	<body>
+		<table>
+			<tr>
+			{% for dev, color in path %}
+				<td align="center" bgcolor="{{ color }}">
+					<a style="text-decoration:none;" href="/connection/{{ dev.pk }}">{{ dev.ip }}</a><br>{{ dev.model.type }}
+				</td>
+				<td>
+					{% if forloop.last %}
+						-{{ dev.incoming_port }}port--CISCO
+					{% else %}
+						-{{ dev.incoming_port }}port--{{ dev.up_connect_port }}port-
+					{% endif %}
+				</td>
+			{% endfor %}
+			</tr>
+		</table>
+	</body>
+</html>
