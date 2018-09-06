@@ -1,11 +1,13 @@
-<!doctype html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Подключения</title>
-	</head>
-	<body>
-		<table  border="1" cellpadding="2">
+{% extends "base.html" %}
+
+{% block title %}Подключения{% endblock %}
+{% block head %} Подключения на <a href="/connection/{{ dev.pk }}/all_connection" title="Показать все подключения от этого узла">
+									{{ dev.ip }} 
+								</a>
+{% endblock %}
+ 
+{% block main %}
+		<table class="table table-bordered">
 			<tr>
 				<td bgcolor="{{ color }}">
 					{{ dev.model.type }}&nbsp;{{ dev.model.model }}
@@ -14,7 +16,7 @@
 					сети&nbsp;
 				</td>				
 				<td bgcolor="{{ color }}">
-					<a style="text-decoration:none;" href="/connection/{{ dev.pk }}/path">{{ dev.ip }}</a>
+					<a href="/connection/{{ dev.pk }}/path" title="Показать путь до данного узла">{{ dev.ip }}</a>
 				</td>
 			</tr>
 			{% for connection in connections %}
@@ -31,5 +33,5 @@
 			</tr>
 			{% endfor %}
 		</table>
-	</body>
-</html>
+{% endblock %}
+

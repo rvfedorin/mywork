@@ -1,15 +1,13 @@
-<!doctype html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Путь до {{ to_dev.ip }}</title>
-	</head>
-	<body>
+{% extends "base.html" %}
+
+{% block title %}Подключения{% endblock %}
+{% block head %} Путь до {{ to_dev.ip }} {% endblock %}
+{% block main %}
 		<table>
 			<tr>
 			{% for dev, color in path %}
 				<td align="center" bgcolor="{{ color }}">
-					<a style="text-decoration:none;" href="/connection/{{ dev.pk }}">{{ dev.ip }}</a><br>{{ dev.model.type }}
+					<a href="/connection/{{ dev.pk }}" title="Показать подключения на данном устройстве">{{ dev.ip }}</a><br>{{ dev.model.type }}
 				</td>
 				<td>
 					{% if forloop.last %}
@@ -21,5 +19,4 @@
 			{% endfor %}
 			</tr>
 		</table>
-	</body>
-</html>
+{% endblock %}

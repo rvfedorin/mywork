@@ -1,10 +1,9 @@
-<!doctype html>
-<html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Подключения от </title>
-	</head>
-	<body>
+{% extends "base.html" %}
+
+{% block title %}Подключения{% endblock %}
+{% block head %} Все подключения от {{ source.ip }} {{ source.comment }} {% endblock %}
+
+{% block main %}
 		<table  border="1" cellpadding="2">
 		{% for dev, color, connection in connections %}
 		
@@ -35,5 +34,4 @@
 		
 		{% endfor %}
 		</table>
-	</body>
-</html>
+{% endblock %}

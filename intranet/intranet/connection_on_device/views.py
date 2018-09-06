@@ -14,11 +14,10 @@ COLORS = {"Switch":'Lime', "RWR":'Yellow', "UBNT":'Gold'}
 def index(request):
     _result = ''
     all_dev = Device.objects.all()
-    for dev in all_dev:
-        id_dev = dev.pk
-        _result += f'<a style="text-decoration:none;" href="/connection/{id_dev}/">{dev.city}&nbsp;&nbsp;&nbsp; {dev.ip} {dev.model.model}</a><br>'
 
-    return HttpResponse(_result)
+    return render(request, "dev_list.html", {
+        "devices":all_dev, 
+        })
 
 
 def on_device(request, id_dev):
@@ -62,6 +61,12 @@ def path_to(request, id_dev):
     path = [(dev, COLORS[dev.model.type])]
     to_dev = dev
 
+    if dev.up_connect_ip == '255.255.255.255':
+        return render(request, "path_to_device.html", {
+                "path": path,
+                "to_dev": to_dev,
+                })
+
     if_loop = 0
     while True:
         if_loop += 1
@@ -94,7 +99,7 @@ def serch_connect(connect_on_port):
 
 
 
-def all_connection_port(dev, connections_dev=[]):
+def all_connection_port(dev, connections_dev):
     all_connection = ConnectionOnDevice.objects.filter(id_dev=dev)
     connections = []
     list_connection_lower_dev = []
@@ -116,22 +121,24 @@ def all_connection_port(dev, connections_dev=[]):
     connections_dev.append((dev, COLORS[dev.model.type], sorted(connections, key=lambda x: x.port)))
 
     for _dev in list_connection_lower_dev:
-        all_connection_port(_dev)
+        all_connection_port(_dev, connections_dev)
 
     return connections_dev
 
 
 
 def all_connection(request, id_dev):
-
+    connections_dev = []
     try:
         dev = Device.objects.get(pk=id_dev)
     except Device.DoesNotExist:
         raise Http404('Device not found!')
 
-    connections = all_connection_port(dev)   
+    source_connect = dev
+    connections = all_connection_port(dev, connections_dev) 
     
     
     return render(request, "all_connection_from.html", {
         "connections":connections, 
+        "source":source_connect
         })
