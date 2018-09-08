@@ -1,7 +1,42 @@
 {% extends "base.html" %}
 
-{% block title %}Подключения{% endblock %}
-{% block head %} Список устройств {% endblock %}
+{% block title %}Список устройств{% endblock %}
+{% block head %}
+
+	{% if region %}
+{# Если регион выбран, выводим его название #}
+		{{ region }} 
+{# Если город выбран, выводим его название #}
+		{% if city %}
+
+			{{ city }}
+
+		{% else %}
+{# Если город не выбран, выводим список городов при выбранном регионе #}
+			<table  border="1" cellpadding="2">
+				<tr>
+			{% for city in cities %}
+				<td>
+					<a href="/device/{{ region }}/{{ city.city }}/" title="Показать подключения в городе {{ city.city }}">{{ city.city }}</a>
+				</td>
+			{% endfor %}
+				</tr>
+			</table>
+
+		{% endif %}
+{# Если регион не выбран, выводим список регионов #}
+	{% else %}
+		<table  border="1" cellpadding="2">
+			<tr>
+		{% for reg in regions %}
+			<td>
+				<a href="/device/{{ reg }}/" title="Показать подключения в регионе {{ reg }}">{{ reg }}</a>
+			</td>
+		{% endfor %}
+			</tr>
+		</table>
+	{% endif %}
+{% endblock %}
 
 {% block main %}
 		<table  border="1" cellpadding="2">
