@@ -24,6 +24,12 @@ class Cities(models.Model):
         _text = f"{REGIONS[self.region-1][1]} {self.city} ({self.city_prefix});  {self.comment}"
         return _text
 
+    def get_reg_id(region: str):
+        for _id, _reg in REGIONS:
+            if _reg == region:
+                return _id
+
+
     class Meta:
         verbose_name = 'Город'
         verbose_name_plural = 'Города'
