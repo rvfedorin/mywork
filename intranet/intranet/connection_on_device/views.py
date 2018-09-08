@@ -14,7 +14,7 @@ COLORS = {"Switch":'Lime', "RWR":'Yellow', "UBNT":'Gold'}
 def index(request):
     all_dev = Device.objects.all()
 
-    return render(request, "dev_list.html", {
+    return render(request, "dev_list_con.html", {
         "devices":all_dev, 
         })
 

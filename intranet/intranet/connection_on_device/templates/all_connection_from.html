@@ -15,7 +15,7 @@
 					сети&nbsp;
 				</td>				
 				<td bgcolor="{{ color }}">
-					<a style="text-decoration:none;" href="/connection/{{ dev.pk }}/path">{{ dev.ip }}</a>
+					<a style="text-decoration:none;" href="{% url 'path_to_dev' dev.pk %}">{{ dev.ip }}</a>
 				</td>
 			</tr>
 			{% for connect in connection %}

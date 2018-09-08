@@ -7,7 +7,7 @@
 			<tr>
 			{% for dev, color in path %}
 				<td align="center" bgcolor="{{ color }}">
-					<a href="/connection/{{ dev.pk }}" title="Показать подключения на данном устройстве">{{ dev.ip }}</a><br>{{ dev.model.type }}
+					<a href="{% url 'connections_on_dev' dev.pk %}" title="Показать подключения на данном устройстве">{{ dev.ip }}</a><br>{{ dev.model.type }}
 				</td>
 				<td>
 					{% if forloop.last %}

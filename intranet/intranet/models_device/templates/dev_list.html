@@ -10,8 +10,8 @@
 		{% if city %}
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
-		  	<li class="breadcrumb-item"><a href="/device/">Все регионы</a></li>
-		    <li class="breadcrumb-item"><a href="/device/{{ region }}/">{{ region }}</a></li>
+		  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Все регионы</a></li>
+		    <li class="breadcrumb-item"><a href="{% url 'dev_list_region' region %}">{{ region }}</a></li>
 		    <li class="breadcrumb-item active" aria-current="page">{{ city }} </li>
 		  </ol>
 		</nav>
@@ -20,7 +20,7 @@
 {# Если город не выбран, выводим список городов при выбранном регионе #}
 			<nav aria-label="breadcrumb">
 			  <ol class="breadcrumb">
-			  	<li class="breadcrumb-item"><a href="/device/">Все регионы</a></li>
+			  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Все регионы</a></li>
 			    <li class="breadcrumb-item active" aria-current="page">{{ region }} </li>
 			  </ol>
 			</nav>
@@ -28,7 +28,7 @@
 				<tr>
 			{% for city in cities %}
 				<td>
-					<a href="/device/{{ region }}/{{ city.city }}/" title="Показать подключения в городе {{ city.city }}">{{ city.city }}</a>
+					<a href="{% url 'dev_list_city' region city.city %}" title="Показать подключения в городе {{ city.city }}">{{ city.city }}</a>
 				</td>
 			{% endfor %}
 				</tr>
@@ -41,7 +41,7 @@
 			<tr>
 		{% for reg in regions %}
 			<td>
-				<a href="/device/{{ reg }}/" title="Показать подключения в регионе {{ reg }}">{{ reg }}</a>
+				<a href="{% url 'device'%}{{ reg }}/" title="Показать подключения в регионе {{ reg }}">{{ reg }}</a>
 			</td>
 		{% endfor %}
 			</tr>
@@ -54,7 +54,7 @@
 			{% for dev in devices %}
 			<tr>
 				<td>
-					<a href="/connection/{{ dev.pk }}/" title="Показать подключения на данном устройстве">
+					<a href="{% url 'connections_on_dev' dev.pk %}" title="Показать подключения на данном устройстве">
 						{{ dev.city }}&nbsp;&nbsp;&nbsp; {{ dev.ip }} {{ dev.model.model }}
 					</a>
 				</td>

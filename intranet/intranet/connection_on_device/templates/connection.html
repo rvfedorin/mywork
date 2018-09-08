@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}Подключения{% endblock %}
-{% block head %} Подключения на <a href="/connection/{{ dev.pk }}/all_connection" title="Показать все подключения от этого узла">
+{% block head %} Подключения на <a href="{% url 'all_connection' dev.pk %}" title="Показать все подключения от этого узла">
 									{{ dev.ip }} 
 								</a>
 {% endblock %}
@@ -16,7 +16,7 @@
 					сети&nbsp;
 				</td>				
 				<td bgcolor="{{ color }}">
-					<a href="/connection/{{ dev.pk }}/path" title="Показать путь до данного узла">{{ dev.ip }}</a>
+					<a href="{% url 'path_to_dev' dev.pk %}" title="Показать путь до данного узла">{{ dev.ip }}</a>
 				</td>
 			</tr>
 			{% for connection in connections %}
