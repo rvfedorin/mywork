@@ -5,14 +5,25 @@
 
 	{% if region %}
 {# Если регион выбран, выводим его название #}
-		{{ region }} 
+		
 {# Если город выбран, выводим его название #}
 		{% if city %}
-
-			{{ city }}
+		<nav aria-label="breadcrumb">
+		  <ol class="breadcrumb">
+		  	<li class="breadcrumb-item"><a href="/device/">Все регионы</a></li>
+		    <li class="breadcrumb-item"><a href="/device/{{ region }}/">{{ region }}</a></li>
+		    <li class="breadcrumb-item active" aria-current="page">{{ city }} </li>
+		  </ol>
+		</nav>
 
 		{% else %}
 {# Если город не выбран, выводим список городов при выбранном регионе #}
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb">
+			  	<li class="breadcrumb-item"><a href="/device/">Все регионы</a></li>
+			    <li class="breadcrumb-item active" aria-current="page">{{ region }} </li>
+			  </ol>
+			</nav>
 			<table  border="1" cellpadding="2">
 				<tr>
 			{% for city in cities %}
