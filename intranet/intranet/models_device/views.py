@@ -42,6 +42,18 @@ def region(request, region):
     for _dev in reg:
         all_dev += list(Device.objects.filter(city=_dev))
 
+    try:
+    	page_num = request.GET['page']
+    except KeyError:
+    	page_num = 1
+
+    paginator = Paginator(all_dev, 5)
+
+    try:
+    	all_dev = paginator.page(page_num)
+    except InvalidPage:
+    	all_dev = paginator.page(1)
+
     return render(request, "dev_list.html", {
         "devices":all_dev, 
         "cities":reg,
@@ -56,6 +68,17 @@ def city(request, region, city):
         raise Http404('Device not found!')  
 
     all_dev = Device.objects.filter(city=reg)
+
+    try:
+    	page_num = request.GET['page']
+    except KeyError:
+    	page_num = 1
+
+    paginator = Paginator(all_dev, 5)
+    try:
+    	all_dev = paginator.page(page_num)
+    except InvalidPage:
+    	all_dev = paginator.page(1)
 
     return render(request, "dev_list.html", {
         "devices":all_dev, 

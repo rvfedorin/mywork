@@ -1,0 +1,21 @@
+					{% if devices.paginator.num_pages > 1%}
+						<nav aria-label="pagunator">
+				  			<ul class="pagination justify-content-center">
+				  				{% if devices.has_previous %}
+				  					<li class="page-item"><a class="page-link" href="{% url 'dev_list_region' region %}?page={{ devices.previous_page_number }}">Previous</a></li>
+				  				{% endif %}
+
+					  			{% for pn in devices.paginator.page_range %}
+					  				{% if devices.number != pn %}
+					  					<li class="page-item"><a class="page-link" href="{% url 'dev_list_region' region %}?page={{ pn }}">{{ pn }}</a></li>
+					  				{% else %}
+					  					<li class="page-item disabled"><a class="page-link" href="#">{{ pn }}</a></li>
+					  				{% endif %}
+					  			{% endfor %}
+
+					  			{% if devices.has_next %}
+				  					<li class="page-item"><a class="page-link" href="{% url 'dev_list_region' region %}?page={{ devices.next_page_number }}">Next</a></li>
+				  				{% endif %}
+				  			</ul>
+				  		</nav>
+				  	{% endif %}
