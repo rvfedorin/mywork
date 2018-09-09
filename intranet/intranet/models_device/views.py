@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
+from django.core.paginator import Paginator, InvalidPage
 
 from models_device.models import Device, ModelDevices
 from cities.models import Cities, REGIONS
@@ -7,10 +8,21 @@ from cities.models import Cities, REGIONS
 
 
 def index(request):
-    all_dev = Device.objects.all()
     regions = []
     for _reg in REGIONS:
         regions.append(_reg[1])
+
+    try:
+    	page_num = request.GET['page']
+    except KeyError:
+    	page_num = 1
+
+    paginator = Paginator(Device.objects.all().order_by('city'), 5)
+
+    try:
+    	all_dev = paginator.page(page_num)
+    except InvalidPage:
+    	all_dev = paginator.page(1)
 
     return render(request, "dev_list.html", {
         "devices":all_dev, 
