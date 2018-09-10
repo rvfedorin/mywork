@@ -1,15 +1,16 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.core.paginator import Paginator, InvalidPage
-from django.views.generic import TemplateView
+from django.views.generic.list import ListView
 
 from models_device.models import Device, ModelDevices
 from cities.models import Cities, REGIONS
 # Create your views here.
 
 
-class DeviceView(TemplateView):
+class DeviceView(ListView):
     template_name = "dev_list.html"
+    paginate_by = 5
 
 
     def my_paginator(self, obj_list, num_list=5):
@@ -38,7 +39,7 @@ class DeviceView(TemplateView):
         self.context["devices"] = self.my_paginator(all_dev)
 
         return self.context
-        
+
 
     def _region(self):
         reg_id = Cities.get_reg_id(self.context["region"])
@@ -58,24 +59,35 @@ class DeviceView(TemplateView):
 
 
     def _all_dev(self):
-        regions = []
-        for _reg in REGIONS:
-            regions.append(_reg[1])
-
-        self.context["devices"] = self.my_paginator(Device.objects.all().order_by('city'))
-        self.context["regions"] = regions
-
-        return self.context        
+        return Device.objects.all().order_by('city')    
 
 
-    def get_context_data(self, **kwars):
-        self.context = super(DeviceView, self).get_context_data(**kwars)
-
-        if "city" in self.context:
+    def get(self, request, *args, **kwargs):
+        if "city" in self.kwargs:
             return self._city()
 
-        elif "region" in self.context:
+        elif "region" in self.kwargs:
             return self._region()
 
         else:
+            self.all_dev_list = True
+            regions = []
+            for _reg in REGIONS:
+                regions.append(_reg[1])
+            self.kwargs["regions"] = regions
+
+
+        return super(DeviceView, self).get(request, *args, **kwargs)
+
+
+    def get_context_data(self, **kwargs):
+        self.context = super(DeviceView, self).get_context_data(**kwargs)
+        self.context["regions"] = self.kwargs["regions"]
+        
+        return self.context
+
+
+    def get_queryset(self):
+        if self.all_dev_list:
             return self._all_dev()
+

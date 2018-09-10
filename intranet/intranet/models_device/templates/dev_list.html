@@ -41,7 +41,7 @@
 			<tr>
 		{% for reg in regions %}
 			<td>
-				<a href="{% url 'device'%}{{ reg }}/" title="Показать подключения в регионе {{ reg }}">{{ reg }}</a>
+				<a href="{% url 'device' %}{{ reg }}/" title="Показать подключения в регионе {{ reg }}">{{ reg }}</a>
 			</td>
 		{% endfor %}
 			</tr>
@@ -51,7 +51,7 @@
 
 {% block main %}
 		<table  border="1" cellpadding="2">
-			{% for dev in devices %}
+			{% for dev in object_list %}
 			<tr>
 				<td>
 					<a href="{% url 'connections_on_dev' dev.pk %}" title="Показать подключения на данном устройстве">

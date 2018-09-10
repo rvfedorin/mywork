@@ -1,20 +1,20 @@
-					{% if devices.paginator.num_pages > 1%}
+					{% if page_obj.paginator.num_pages > 1%}
 						<nav aria-label="pagunator">
 				  			<ul class="pagination justify-content-center">
-				  				{% if devices.has_previous %}
-				  					<li class="page-item"><a class="page-link" href="{% url 'device' %}?page={{ devices.previous_page_number }}">Previous</a></li>
+				  				{% if page_obj.has_previous %}
+				  					<li class="page-item"><a class="page-link" href="{% url 'device' %}?page={{ page_obj.previous_page_number }}">Previous</a></li>
 				  				{% endif %}
 
-					  			{% for pn in devices.paginator.page_range %}
-					  				{% if devices.number != pn %}
+					  			{% for pn in page_obj.paginator.page_range %}
+					  				{% if page_obj.number != pn %}
 					  					<li class="page-item"><a class="page-link" href="{% url 'device' %}?page={{ pn }}">{{ pn }}</a></li>
 					  				{% else %}
 					  					<li class="page-item disabled"><a class="page-link" href="#">{{ pn }}</a></li>
 					  				{% endif %}
 					  			{% endfor %}
 
-					  			{% if devices.has_next %}
-				  					<li class="page-item"><a class="page-link" href="{% url 'device' %}?page={{ devices.next_page_number }}">Next</a></li>
+					  			{% if page_obj.has_next %}
+				  					<li class="page-item"><a class="page-link" href="{% url 'device' %}?page={{ page_obj.next_page_number }}">Next</a></li>
 				  				{% endif %}
 				  			</ul>
 				  		</nav>
