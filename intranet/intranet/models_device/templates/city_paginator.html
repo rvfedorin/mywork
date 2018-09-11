@@ -1,10 +1,10 @@
 					{% if page_obj.paginator.num_pages > 1 %}
 						<nav aria-label="pagunator">
-				  			<ul class="pagination justify-content-center">
+				  			<ul class="pagination justify-content-center pagination-sm">
 				  				{% if page_obj.has_previous %}
 				  					<li class="page-item">
 				  						<a class="page-link" 
-				  						href="{% url 'dev_list_city' region city.city as url_city %}?page={{ page_obj.previous_page_number }}">Previous</a>
+				  						href="{% url 'dev_list_city' region city.city as url_city %}?page={{ page_obj.previous_page_number }}">Назад</a>
 				  					</li>
 				  				{% endif %}
 
@@ -17,7 +17,7 @@
 					  			{% endfor %}
 
 					  			{% if page_obj.has_next %}
-				  					<li class="page-item"><a class="page-link" href="{{ url_city }}?page={{ page_obj.next_page_number }}">Next</a></li>
+				  					<li class="page-item"><a class="page-link" href="{{ url_city }}?page={{ page_obj.next_page_number }}">Вперёд</a></li>
 				  				{% endif %}
 				  			</ul>
 				  		</nav>
