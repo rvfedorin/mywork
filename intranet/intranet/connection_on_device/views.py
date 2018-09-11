@@ -87,7 +87,9 @@ def path_to(request, id_dev):
         if if_loop > 15:
             return HttpResponse('path not found')
 
+
 def serch_connect(connect_on_port):
+    # check for a downstream connection in the port, if it has - return object device
     ip_pattern = '\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}'
     _search = re.search(ip_pattern, connect_on_port)
     if _search is not None:
@@ -97,8 +99,8 @@ def serch_connect(connect_on_port):
     return result
 
 
-
 def all_connection_port(dev, connections_dev):
+    # get all connection on one device
     all_connection = ConnectionOnDevice.objects.filter(id_dev=dev)
     connections = []
     list_connection_lower_dev = []
@@ -127,6 +129,7 @@ def all_connection_port(dev, connections_dev):
 
 
 def all_connection(request, id_dev):
+    # get all connection on all devices from the needed device
     connections_dev = []
     try:
         dev = Device.objects.get(pk=id_dev)
