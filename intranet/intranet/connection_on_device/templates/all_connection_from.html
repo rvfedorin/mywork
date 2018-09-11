@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 
 {% block title %}Подключения{% endblock %}
-{% block head %} Все подключения от {{ source.ip }} {{ source.comment }} {% endblock %}
+{% block head %}
+		<nav aria-label="breadcrumb">
+		  <ol class="breadcrumb">
+		  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Список устройств</a></li>
+		  	<li class="breadcrumb-item"><a href="{% url 'connections_on_dev' source.pk %}">Вернуться к подключению только на {{ source.ip }} </a></li>
+		    <li class="breadcrumb-item">Все подключения от {{ source.ip }} {{ source.comment }} </li>
+		  </ol>
+		</nav>
+{% endblock %}
 
 {% block main %}
 		<table border="1" cellpadding="2">

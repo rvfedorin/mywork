@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 
 {% block title %}Подключения{% endblock %}
-{% block head %} Подключения на <a href="{% url 'all_connection' dev.pk %}" title="Показать все подключения от этого узла">
-									{{ dev.ip }} 
-								</a>
+{% block head %} 
+		<nav aria-label="breadcrumb">
+		  <ol class="breadcrumb">
+		  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Список устройств</a></li>
+		    <li class="breadcrumb-item"><a href="{% url 'all_connection' dev.pk %}" title="Показать все подключения от этого узла">Показать все подключения от {{ dev.ip }} </a></li>
+		  </ol>
+		</nav>
 {% endblock %}
  
 {% block main %}
