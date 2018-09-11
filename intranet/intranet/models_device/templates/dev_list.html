@@ -64,6 +64,8 @@
 			</div>
 			{% endfor %}
 {# Пагинатор #}
+			<div class="row">
+          		<div class="col-4 p-3">
 					{% if city %}
 						{% include 'city_paginator.html' %}
 					{% elif region %}
@@ -71,5 +73,6 @@
 					{% else %}
 						{% include 'all_paginator.html' %}
 					{% endif %}
-
+				</div>
+			</div>
 {% endblock %}
