@@ -13,7 +13,6 @@ REGIONS = (
 
 class Cities(models.Model):
 
-
     city = models.CharField(max_length=30, help_text='Город')
     city_prefix = models.CharField(max_length=10, help_text='Префикс в мнемокоде')
     region = models.IntegerField(choices=REGIONS)
@@ -28,6 +27,12 @@ class Cities(models.Model):
         for _id, _reg in REGIONS:
             if _reg == region:
                 return _id
+
+    def all_regions():
+        regions = []
+        for _reg in REGIONS:
+            regions.append(_reg[1])
+        return regions
 
 
     class Meta:
