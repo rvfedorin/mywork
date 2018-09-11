@@ -22,46 +22,47 @@
 			  <ol class="breadcrumb">
 			  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Все регионы</a></li>
 			    <li class="breadcrumb-item active" aria-current="page">{{ region }} </li>
+	  				<li class="breadcrumb-item dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    				<a href="#">Выбрать город</a>
+	  				</li>
+	  				<div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+				{% for city in cities %}
+						<a class="dropdown-item" href="{% url 'dev_list_city' region city.city %}" title="Показать подключения в городе {{ city.city }}">{{ city.city }}</a>
+				{% endfor %}
+					</div>
 			  </ol>
 			</nav>
-			<table  border="1" cellpadding="2">
-				<tr>
-			{% for city in cities %}
-				<td>
-					<a href="{% url 'dev_list_city' region city.city %}" title="Показать подключения в городе {{ city.city }}">{{ city.city }}</a>
-				</td>
-			{% endfor %}
-				</tr>
-			</table>
-
 		{% endif %}
 {# Если регион не выбран, выводим список регионов #}
 	{% else %}
-		<table  border="1" cellpadding="2">
-			<tr>
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb">
+			  	<li class="breadcrumb-item active">Все регионы</li>
+	  				<li class="breadcrumb-item dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    				<a href="#">Выбрать регион</a>
+	  				</li>
+  				<div class="dropdown-menu" aria-labelledby="dropdownMenu2">
 		{% for reg in regions %}
-			<td>
-				<a href="{% url 'device' %}{{ reg }}/" title="Показать подключения в регионе {{ reg }}">{{ reg }}</a>
-			</td>
+					<a class="dropdown-item" href="{% url 'device' %}{{ reg }}/" title="Показать подключения в регионе {{ reg }}">{{ reg }}</a>
 		{% endfor %}
-			</tr>
-		</table>
+				</div>
+			  </ol>
+			</nav>
+
 	{% endif %}
 {% endblock %}
 
 {% block main %}
-		<table  border="1" cellpadding="2">
+			
 			{% for dev in object_list %}
-			<tr>
-				<td>
+			<div class="row">
+          		<div class="col">
 					<a href="{% url 'connections_on_dev' dev.pk %}" title="Показать подключения на данном устройстве">
 						{{ dev.city }}&nbsp;&nbsp;&nbsp; {{ dev.ip }} {{ dev.model.model }}
 					</a>
-				</td>
-			</tr>
+				</div>
+			</div>
 			{% endfor %}
-			<tr>
-				<td align="right">
 {# Пагинатор #}
 					{% if city %}
 						{% include 'city_paginator.html' %}
@@ -71,7 +72,4 @@
 						{% include 'all_paginator.html' %}
 					{% endif %}
 
-				</td>
-			</tr>
-		</table>
 {% endblock %}
