@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Добаление устройства{% endblock %}
+{% block head %}
+		<nav aria-label="breadcrumb">
+		  <ol class="breadcrumb">
+		  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Все регионы</a></li>
+		  </ol>
+		</nav>
+{% endblock %}
+
+{% block main %}
+<form action="" method="post">
+	{% csrf_token %}
+	{{ form.as_p}}
+	<input type="submit" name="Добавить">
+</form>
+{% endblock %}

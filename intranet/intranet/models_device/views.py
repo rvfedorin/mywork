@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
-from django.core.paginator import Paginator, InvalidPage
+from django.core.paginator import InvalidPage
 from django.views.generic.list import ListView
+from django.views.generic.edit import CreateView
 
 from models_device.models import Device, ModelDevices
 from cities.models import Cities
@@ -73,4 +74,10 @@ class DeviceView(ListView):
     def get_queryset(self):
         return self._action_list[0]()
 
+
+class DeviceCreate(CreateView):
+    model = Device
+    fields = ['model', 'ip', 'incoming_port', 'up_connect_ip', 'up_connect_port', 'city']
+    template_name = "device_add.html"
+    success_url = "device"
 

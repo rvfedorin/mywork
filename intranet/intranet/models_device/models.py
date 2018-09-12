@@ -15,15 +15,11 @@ class ModelDevices(models.Model):
     class Meta:
         verbose_name = 'Тип и модель оборудования'
         verbose_name_plural = 'Типы и модели оборудования'
+        ordering = ['model']
 
     def __str__(self):
-        _text = f"""
-        Device: {self.type}; 
-        Model: {self.model}; 
-        Ports: {self.ports}; 
-        Template: {self.template}; 
-        Comment: {self.comment}; 
-        """
+        _text = f"{self.type} {self.model} {self.comment}"
+
         return _text
 
 
@@ -44,3 +40,4 @@ class Device(models.Model):
     class Meta:
         verbose_name = 'Установленное оборудование'
         verbose_name_plural = 'Установленное оборудование'
+
