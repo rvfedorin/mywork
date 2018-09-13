@@ -2,10 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.core.paginator import InvalidPage
 from django.views.generic.list import ListView
-from django.views.generic.edit import CreateView
+from django.views.generic import TemplateView
+from django import forms
 
 from models_device.models import Device, ModelDevices
 from cities.models import Cities
+from connection_on_device.models import ConnectionOnDevice
+
 # Create your views here.
 
 
@@ -75,9 +78,35 @@ class DeviceView(ListView):
         return self._action_list[0]()
 
 
-class DeviceCreate(CreateView):
-    model = Device
-    fields = ['model', 'ip', 'incoming_port', 'up_connect_ip', 'up_connect_port', 'city']
-    template_name = "device_add.html"
-    success_url = "device"
+class DeviceForm(forms.ModelForm):
+    # model = forms.CharField(max_length=100)
+    class Meta:
+        model = Device
+        fields = ['model', 'ip', 'incoming_port', 'up_connect_ip', 'up_connect_port', 'city', 'comment']
 
+
+class DeviceCreate(TemplateView):
+    form = None
+    template_name = "device_add.html"
+
+    def get(self, request, *args, **kwargs):
+        self.form = DeviceForm()
+        return super(DeviceCreate, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(DeviceCreate, self).get_context_data(**kwargs)
+        context['form'] = self.form
+        return context
+
+    # success_url = "device"
+
+# class ConnectionOnDevice(models.Model):
+#     id_dev = models.ForeignKey(Device, null=True, on_delete=models.SET_NULL, 
+#         help_text='ID оборудования, к которому подключен клиент/устройство')
+#     port = models.PositiveSmallIntegerField(help_text='Порт подключения')
+#     connected = models.CharField(max_length=30, help_text='Что подключено к порту')
+#     vlan = models.CharField(max_length=5, default='Null', help_text='vlan клиента, если есть')
+#     ip_client = models.TextField(blank=True, verbose_name='IP клиента', help_text='IP/сеть выделенные клиенту. Если несколько - через ";"')
+#     comment = models.TextField(blank=True, help_text='Комментарий')
+#     date = models.DateTimeField(auto_now_add=True, help_text='Дата добавления')
+#     update = models.DateTimeField(auto_now=True, help_text='Дата изменения')
