@@ -26,7 +26,7 @@ class ModelDevices(models.Model):
 class Device(models.Model):
     model = models.ForeignKey(ModelDevices, null=True, on_delete=models.SET_NULL, help_text='модель устройства', verbose_name='Модель')
     ip = models.GenericIPAddressField(unique=True, help_text='IP нового устройства', verbose_name='IP устройства')
-    incoming_port = models.CharField(max_length=10, help_text='приходящий порт (если порт радио - 1)', default=1, verbose_name='Приходящий порт')
+    incoming_port = models.CharField(max_length=10, help_text='приходящий порт', default=1, verbose_name='Приходящий порт')
     up_connect_ip = models.GenericIPAddressField(help_text='IP устройства от которого подключено', verbose_name='IP вышестоящего')
     up_connect_port = models.CharField(max_length=10, help_text='порт подключения на вышестоящем устройстве', default=1, verbose_name='Порт вышестоящего')
     city = models.ForeignKey(Cities, on_delete=models.PROTECT, help_text='город подключения', verbose_name='Город')

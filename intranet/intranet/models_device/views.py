@@ -3,7 +3,9 @@ from django.http import HttpResponse, Http404
 from django.core.paginator import InvalidPage
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView
+from django.shortcuts import redirect
 from django import forms
+
 
 from models_device.models import Device, ModelDevices
 from cities.models import Cities
@@ -80,9 +82,6 @@ class DeviceView(ListView):
 
 
 class DeviceForm(forms.ModelForm):
-    error_css_class = 'error'
-    required_css_class = 'required'
-
     class Meta:
         model = Device
         fields = ['model', 'ip', 'incoming_port', 'up_connect_ip', 'up_connect_port', 'city', 'comment']
@@ -101,15 +100,31 @@ class DeviceCreate(TemplateView):
         context['form'] = self.form
         return context
 
-    # success_url = "device"
+    def post(self, request, *args, **kwargs):
+        self.form = DeviceForm(request.POST)
 
-# class ConnectionOnDevice(models.Model):
-#     id_dev = models.ForeignKey(Device, null=True, on_delete=models.SET_NULL, 
-#         help_text='ID оборудования, к которому подключен клиент/устройство')
-#     port = models.PositiveSmallIntegerField(help_text='Порт подключения')
-#     connected = models.CharField(max_length=30, help_text='Что подключено к порту')
-#     vlan = models.CharField(max_length=5, default='Null', help_text='vlan клиента, если есть')
-#     ip_client = models.TextField(blank=True, verbose_name='IP клиента', help_text='IP/сеть выделенные клиенту. Если несколько - через ";"')
-#     comment = models.TextField(blank=True, help_text='Комментарий')
-#     date = models.DateTimeField(auto_now_add=True, help_text='Дата добавления')
-#     update = models.DateTimeField(auto_now=True, help_text='Дата изменения')
+        if self.form.is_valid():
+
+            # Добавление нового устройства на подключение к порту вышестоящего
+            connect_on_dev = self.form.cleaned_data['up_connect_ip']
+
+            form_connection_to_up = ConnectionOnDevice()
+            form_connection_to_up.id_dev = Device.objects.get(ip=connect_on_dev)
+            form_connection_to_up.port = self.form.cleaned_data['up_connect_port']
+            form_connection_to_up.connected = self.form.cleaned_data['ip']
+            form_connection_to_up.save()
+          
+            # Сохранение нового устройства
+            self.form.save()
+
+            # Добавление UP порта на новое устройство
+            form_connection_to_me = ConnectionOnDevice()
+            form_connection_to_me.id_dev = Device.objects.get(ip=self.form.cleaned_data['ip'])
+            form_connection_to_me.port = self.form.cleaned_data['incoming_port']
+            form_connection_to_me.connected = "UP"
+            form_connection_to_me.save()
+
+            return redirect('device')
+        else:
+            return super(DeviceCreate, self).get(request, *args, **kwargs)
+
