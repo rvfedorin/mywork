@@ -10,7 +10,7 @@ class ModelDevices(models.Model):
     model = models.CharField(max_length=30, help_text='модель устройства', verbose_name='Модель')
     ports = models.PositiveSmallIntegerField(help_text='количество портов', verbose_name='Портов')
     template = models.CharField(max_length=50,help_text='имя файла с шаблоном', verbose_name='Шаблон')
-    comment = models.TextField(blank=True, verbose_name='Комментарий')
+    comment = models.TextField(blank=True, verbose_name='Комментарий', help_text='комментарий')
 
     class Meta:
         verbose_name = 'Тип и модель оборудования'
@@ -26,11 +26,11 @@ class ModelDevices(models.Model):
 class Device(models.Model):
     model = models.ForeignKey(ModelDevices, null=True, on_delete=models.SET_NULL, help_text='модель устройства', verbose_name='Модель')
     ip = models.GenericIPAddressField(unique=True, help_text='IP нового устройства', verbose_name='IP устройства')
-    incoming_port = models.PositiveSmallIntegerField(help_text='приходящий порт (если порт радио - 1)', default=1, verbose_name='Приходящий порт')
+    incoming_port = models.CharField(max_length=10, help_text='приходящий порт (если порт радио - 1)', default=1, verbose_name='Приходящий порт')
     up_connect_ip = models.GenericIPAddressField(help_text='IP устройства от которого подключено', verbose_name='IP вышестоящего')
-    up_connect_port = models.PositiveSmallIntegerField(help_text='порт подключения на вышестоящем устройстве', default=1, verbose_name='Порт вышестоящего')
+    up_connect_port = models.CharField(max_length=10, help_text='порт подключения на вышестоящем устройстве', default=1, verbose_name='Порт вышестоящего')
     city = models.ForeignKey(Cities, on_delete=models.PROTECT, help_text='город подключения', verbose_name='Город')
-    comment = models.TextField(blank=True, verbose_name='Комментарий')
+    comment = models.TextField(blank=True, verbose_name='Комментарий', help_text='комментарий')
     update = models.DateTimeField(auto_now=True)
 
     def __str__(self):

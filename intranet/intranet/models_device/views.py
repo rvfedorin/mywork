@@ -12,6 +12,7 @@ from connection_on_device.models import ConnectionOnDevice
 # Create your views here.
 
 
+
 class DeviceView(ListView):
     template_name = "dev_list.html"
     paginate_by = 5
@@ -79,7 +80,9 @@ class DeviceView(ListView):
 
 
 class DeviceForm(forms.ModelForm):
-    # model = forms.CharField(max_length=100)
+    error_css_class = 'error'
+    required_css_class = 'required'
+
     class Meta:
         model = Device
         fields = ['model', 'ip', 'incoming_port', 'up_connect_ip', 'up_connect_port', 'city', 'comment']

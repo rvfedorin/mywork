@@ -10,9 +10,15 @@
 {% endblock %}
 
 {% block main %}
-<form action="" method="post">
-	{% csrf_token %}
-	{{ form.as_p}}
-	<input class="btn btn-outline-secondary" type="submit" name="add_device" value="Добавить">
-</form>
+{% load myfilters %}
+	<form action="" method="post">
+		<div class="form-group">
+			{% csrf_token %}
+			{% for f in form %}
+					<small id="emailHelp" class="form-text text-muted">{{ f.help_text }}</small>
+					{{ f|addclass:'form-control w-25' }}
+			{% endfor %}
+			<input class="btn btn-outline-secondary" type="submit" name="add_device" value="Добавить">
+		</div>
+	</form>
 {% endblock %}
