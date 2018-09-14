@@ -60,6 +60,7 @@
 					<a href="{% url 'connections_on_dev' dev.pk %}" title="Показать подключения на данном устройстве">
 						{{ dev.ip }} {{ dev.model.model }}&nbsp;&nbsp;&nbsp;{{ dev.city }}
 					</a>
+					<a class="alert-link text-dark" href="{% url 'device_edit' dev.pk %}" title="Редактировать данное устройство">редактировать</a>
 				</div>
 			</div>
 			{% endfor %}

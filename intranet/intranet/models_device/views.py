@@ -128,3 +128,47 @@ class DeviceCreate(TemplateView):
         else:
             return super(DeviceCreate, self).get(request, *args, **kwargs)
 
+
+class DeviceUpdate(TemplateView):
+    form = None
+    template_name = 'device_edit.html'
+
+    def get(self, request, *args, **kwargs):
+        self.dev = Device.objects.get(pk = self.kwargs['dev_id'])
+        self.form = DeviceForm(instance=self.dev)
+        return super(DeviceUpdate, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(DeviceUpdate, self).get_context_data(*args, **kwargs)
+        context['device'] = self.dev
+        context['form'] = self.form
+        return context
+
+    def post(self, request, *args, **kwargs):
+        dev = Device.objects.get(pk = self.kwargs['dev_id'])
+        self.form = DeviceForm(request.POST, instance=dev)
+        if self.form.is_valid():
+
+            # Редактирование нового устройства на подключение к порту вышестоящего connected
+            connect_on_dev = self.form.cleaned_data['up_connect_ip']
+
+            form_connection_to_up = ConnectionOnDevice.objects.get(connected=self.form.cleaned_data['ip'])
+            form_connection_to_up.id_dev = Device.objects.get(ip=connect_on_dev)
+            form_connection_to_up.port = self.form.cleaned_data['up_connect_port']
+            form_connection_to_up.connected = self.form.cleaned_data['ip']
+            form_connection_to_up.save()
+
+            # Сохранение нового устройства
+            self.form.save()
+
+            # Редактирование UP порта на новом устройстве
+            form_connection_to_me = ConnectionOnDevice.objects.get(id_dev=dev)
+            form_connection_to_me.id_dev = Device.objects.get(ip=self.form.cleaned_data['ip'])
+            form_connection_to_me.port = self.form.cleaned_data['incoming_port']
+            form_connection_to_me.connected = "UP"
+            form_connection_to_me.save()
+          
+
+            return redirect("device")
+        else:
+            return super(DeviceUpdate, self).get(request, *args, **kwargs)
