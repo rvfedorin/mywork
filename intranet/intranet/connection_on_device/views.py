@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse, Http404
+from django.views.generic import TemplateView
+from django.shortcuts import redirect
+from django import forms
 
 import re
 
@@ -19,7 +22,7 @@ def index(request):
         })
 
 
-def on_device(request, id_dev):
+def on_device_get(request, id_dev):
 
     try:
         dev = Device.objects.get(pk=id_dev)
@@ -44,11 +47,19 @@ def on_device(request, id_dev):
         connections.append(connection)
     connections = sorted(connections, key=lambda x: x.port)
     
+    return connections, dev
+
+
+
+def on_device(request, id_dev):
+    connections, dev = on_device_get(request, id_dev)
+    
     return render(request, "connection.html", {
         "connections":connections, 
         "dev":dev,
         "color":COLORS[dev.model.type],
         })
+
 
 def path_to(request, id_dev):
 
@@ -144,3 +155,56 @@ def all_connection(request, id_dev):
         "connections":connections, 
         "source":source_connect
         })
+
+
+class AddConnectionForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['port'].widget.attrs.update({'class': 'form-control'})
+        self.fields['connected'].widget.attrs.update({'class': 'form-control'})
+        self.fields['vlan'].widget.attrs.update({'class': 'form-control'})
+        self.fields['ip_client'].widget.attrs.update({'class': 'form-control'}, cols='20', rows='4')
+        self.fields['comment'].widget.attrs.update({'class': 'form-control'}, cols='20', rows='2')
+
+
+    class Meta:
+        model = ConnectionOnDevice
+        fields = ["port", "connected", "vlan", "ip_client", "comment"]
+
+
+
+class AddConnection(TemplateView):
+    form = None
+    template_name = "add_connection.html"
+
+    def get(self, request, *args, **kwargs):
+        self.form = AddConnectionForm()
+        self.connections, self.dev = on_device_get(request, self.kwargs['id_dev'])
+
+        return super(AddConnection, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AddConnection, self).get_context_data(*args, **kwargs)
+        context['form'] = self.form
+        context['dev'] = self.dev
+        context['connections'] = self.connections
+        context['color'] = COLORS[self.dev.model.type]
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.form = AddConnectionForm(request.POST)
+        id_dev = self.kwargs['id_dev']
+
+        if self.form.is_valid():
+            connection = ConnectionOnDevice()
+            connection.id_dev = Device.objects.get(pk=id_dev)
+            connection.port = self.form.cleaned_data['port']
+            connection.connected = self.form.cleaned_data['connected']
+            connection.vlan = self.form.cleaned_data['vlan']
+            connection.ip_client = self.form.cleaned_data['ip_client']
+            connection.comment = self.form.cleaned_data['comment']
+            connection.save()
+            return redirect('connections_on_dev', id_dev=id_dev)
+        else:
+            return super(AddConnection, self).get(request, *args, **kwargs)

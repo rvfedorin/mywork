@@ -40,13 +40,32 @@
 				</td>
 			</tr>
 			{% endfor %}
-			<tr>
-				<td colspan="3">
-					<a class="alert-link text-dark" href="{% url 'add_connection' dev.pk %}" data-toggle="tooltip" data-placement="top" title="добавить подключение">
-						<img src="{% static "img/add.png" %}" width="32" height="32">
-					</a>
-				</td>
-			</tr>
+				<form action="" method="post">
+					{% csrf_token %}
+					<tr>
+						<td>
+							<small class="form-text text-muted">{{ form.connected.help_text }}</small>
+							{{ form.connected }}
+							<small class="form-text text-muted">{{ form.comment.help_text }}</small>
+							{{ form.comment }}
+						</td>
+						<td>
+							<small class="form-text text-muted">{{ form.ip_client.help_text }}</small>
+							{{ form.ip_client }}
+						</td>
+						<td>
+							<small class="form-text text-muted">{{ form.port.help_text }}</small>
+							{{ form.port }}
+							<small class="form-text text-muted">{{ form.vlan.help_text }}</small>
+							{{ form.vlan }}
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<input class="btn btn-outline-secondary" type="submit" name="add_device" value="Добавить">
+						</td>
+					</tr>
+				</form>
 		</table>
 {% endblock %}
 
