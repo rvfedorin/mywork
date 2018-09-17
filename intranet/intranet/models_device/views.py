@@ -87,6 +87,10 @@ class DeviceForm(forms.ModelForm):
         fields = ['model', 'ip', 'incoming_port', 'up_connect_ip', 'up_connect_port', 'city', 'comment']
 
 
+class DeviceDeleteForm(forms.Form):
+    device_to_delete = forms.IntegerField()
+
+
 class DeviceCreate(TemplateView):
     form = None
     template_name = "device_add.html"
@@ -172,3 +176,15 @@ class DeviceUpdate(TemplateView):
             return redirect("device")
         else:
             return super(DeviceUpdate, self).get(request, *args, **kwargs)
+
+
+class DeviceDelete(TemplateView):
+    form = None
+
+    def post(self, request, *args, **kwargs):
+        form = DeviceDeleteForm(request.POST)
+        if form.is_valid():
+            device_to_delete = Device.objects.get(pk=form.cleaned_data["device_to_delete"])
+            device_to_delete.delete()
+        return redirect("device")
+        # super(DeviceDelete, self).post(*args, **kwargs)

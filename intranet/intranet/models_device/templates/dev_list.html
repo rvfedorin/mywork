@@ -64,14 +64,14 @@
 					<a href="{% url 'connections_on_dev' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Показать подключения на данном устройстве">
 						{{ dev.ip }}
 					</a>{{ dev.model.model }}
-					<a href="" data-toggle="modal" data-target="#deleteModal" ><img src="{% static "img/delete.png" %}" width="20" height="20"title="Удалить устройство"></a>
+					<a href="" data-toggle="modal" data-target="#deleteModal{{ dev.pk }}" ><img src="{% static "img/delete.png" %}" width="20" height="20"title="Удалить устройство"></a>
 
 						<!-- Modal -->
-						<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+						<div class="modal fade" id="deleteModal{{ dev.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModal{{ dev.pk }}" aria-hidden="true">
 						  <div class="modal-dialog modal-dialog-centered" role="document">
 						    <div class="modal-content">
 						      <div class="modal-header">
-						        <h5 class="modal-title" id="deleteModal">Удаление устройства!!!</h5>
+						        <h5 class="modal-title" id="deleteModal{{ dev.pk }}">Удаление устройства!!!</h5>
 						        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						          <span aria-hidden="true">&times;</span>
 						        </button>
@@ -80,8 +80,14 @@
 						        Вы действительно хотите удалить устройство:<br><b>{{ dev.ip }}&nbsp;({{ dev.model.model }})&nbsp;{{ dev.city.city }}</b><br> и всё, что к нему подключено?
 						      </div>
 						      <div class="modal-footer">
-						        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-						        <button type="button" class="btn btn-outline-danger">Удалить</button>
+						        <form action="{% url 'device_delete' %}" method="post">
+									<div class="form-group">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+										{% csrf_token %}
+										<input type="hidden" name="device_to_delete" value="{{ dev.pk }}">
+										<input class="btn btn-outline-danger" type="submit" name="del_device" value="Удалить">
+									</div>
+								</form>
 						      </div>
 						    </div>
 						  </div>

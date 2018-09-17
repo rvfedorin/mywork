@@ -4,9 +4,9 @@ from models_device.models import Device
 # Create your models here.
 
 class ConnectionOnDevice(models.Model):
-    id_dev = models.ForeignKey(Device, null=True, on_delete=models.SET_NULL, 
+    id_dev = models.ForeignKey(Device, on_delete=models.CASCADE, 
         help_text='ID оборудования, к которому подключен клиент/устройство')
-    port = models.PositiveSmallIntegerField(help_text='Порт подключения')
+    port = models.CharField(max_length=10, help_text='Порт подключения')
     connected = models.CharField(max_length=30, help_text='Что подключено к порту')
     vlan = models.CharField(max_length=5, default='Null', help_text='vlan клиента, если есть')
     ip_client = models.TextField(blank=True, verbose_name='IP клиента', help_text='IP/сеть выделенные клиенту. Если несколько - через ";"')
