@@ -5,7 +5,10 @@
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
 		  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Список устройств</a></li>
-		    <li class="breadcrumb-item"><a href="{% url 'all_connection' dev.pk %}" title="Показать все подключения от этого узла">Показать все подключения от {{ dev.ip }} </a></li>
+		    <li class="breadcrumb-item"><a href="{% url 'all_connection' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать все подключения от этого узла">
+									    	Показать все подключения от {{ dev.ip }}
+										</a>
+			</li>
 		  </ol>
 		</nav>
 {% endblock %}
@@ -20,7 +23,7 @@
 					сети&nbsp;
 				</td>				
 				<td bgcolor="{{ color }}">
-					<a href="{% url 'path_to_dev' dev.pk %}" title="Показать путь до данного узла">{{ dev.ip }}</a>
+					<a href="{% url 'path_to_dev' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать путь до данного узла">{{ dev.ip }}</a>
 				</td>
 			</tr>
 			{% for connection in connections %}

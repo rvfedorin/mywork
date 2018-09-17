@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Список устройств{% endblock %}
 {% block head %}
@@ -57,10 +58,34 @@
 			{% for dev in object_list %}
 			<div class="row">
           		<div class="col">
-					<a href="{% url 'connections_on_dev' dev.pk %}" title="Показать подключения на данном устройстве">
-						{{ dev.ip }} {{ dev.model.model }}&nbsp;&nbsp;&nbsp;{{ dev.city }}
+          			<a class="alert-link text-dark" href="{% url 'device_edit' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
+						<img src="{% static "img/edit.png" %}" width="20" height="20">
 					</a>
-					<a class="alert-link text-dark" href="{% url 'device_edit' dev.pk %}" title="Редактировать данное устройство">редактировать</a>
+					<a href="{% url 'connections_on_dev' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Показать подключения на данном устройстве">
+						{{ dev.ip }}
+					</a>{{ dev.model.model }}
+					<a href="" data-toggle="modal" data-target="#deleteModal" ><img src="{% static "img/delete.png" %}" width="20" height="20"title="Удалить устройство"></a>
+
+						<!-- Modal -->
+						<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+						  <div class="modal-dialog modal-dialog-centered" role="document">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <h5 class="modal-title" id="deleteModal">Удаление устройства!!!</h5>
+						        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						          <span aria-hidden="true">&times;</span>
+						        </button>
+						      </div>
+						      <div class="modal-body">
+						        Вы действительно хотите удалить устройство:<br><b>{{ dev.ip }}&nbsp;({{ dev.model.model }})&nbsp;{{ dev.city.city }}</b><br> и всё, что к нему подключено?
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+						        <button type="button" class="btn btn-outline-danger">Удалить</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>
 				</div>
 			</div>
 			{% endfor %}
