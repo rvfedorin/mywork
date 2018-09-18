@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Подключения{% endblock %}
+{% block head %} 
+		<nav aria-label="breadcrumb">
+		  <ol class="breadcrumb">
+		  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Список устройств</a></li>
+		    <li class="breadcrumb-item"><a href="{% url 'all_connection' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать все подключения от этого узла">
+									    	Показать все подключения от {{ dev.ip }}
+										</a>
+			</li>
+		  </ol>
+		</nav>
+{% endblock %}
+ 
+{% block main %}
+		<table class="table table-hover w-50">
+			<tr>
+				<td bgcolor="{{ color }}">
+					{{ dev.model.type }}&nbsp;{{ dev.model.model }}
+				</td>
+				<td>
+					сети&nbsp;
+				</td>				
+				<td bgcolor="{{ color }}">
+					<a href="{% url 'path_to_dev' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать путь до данного узла">{{ dev.ip }}</a>
+				</td>
+			</tr>
+			{% for connection in connections %}
+				{% if connection.pk == id_con %}
+					<form action="" method="post">
+					{% csrf_token %}
+						<tr>
+							<td>
+								<small class="form-text text-muted">{{ form.connected.help_text }}</small>
+								{{ form.connected }}
+								<small class="form-text text-muted">{{ form.comment.help_text }}</small>
+								{{ form.comment }}
+							</td>
+							<td>
+								<small class="form-text text-muted">{{ form.ip_client.help_text }}</small>
+								{{ form.ip_client }}
+							</td>
+							<td>
+								<small class="form-text text-muted">{{ form.port.help_text }}</small>
+								{{ form.port }}
+								<small class="form-text text-muted">{{ form.vlan.help_text }}</small>
+								{{ form.vlan }}
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<input class="btn btn-outline-secondary" type="submit" name="add_device" value="Сохранить">
+								<a href="{% url 'connections_on_dev' dev.pk %}" class="btn btn-outline-secondary">Отменить</span></a>
+							</td>
+						</tr>
+					</form>
+					{% else %}
+						<tr>
+							<td>
+								{{ connection.connected }}
+							</td>
+							<td>
+								{{ connection.ip_client }}
+							</td>
+							<td>
+								{{ connection.port }}port{{ connection.vlan }}
+							</td>
+						</tr>
+					{% endif %}
+			{% endfor %}
+
+		</table>
+{% endblock %}
+

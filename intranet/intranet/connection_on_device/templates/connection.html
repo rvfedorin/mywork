@@ -30,7 +30,8 @@
 			{% for connection in connections %}
 			<tr>
 				<td>
-          			<a class="alert-link text-dark" href="#" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
+          			<a class="alert-link text-dark" 
+          			href="{% url 'edit_connection' dev.pk connection.pk %}" data-toggle="tooltip" data-placement="left" title="Редактировать подключение">
 						<img src="{% static "img/edit.png" %}" width="20" height="20">
 					</a>
 				</td>
@@ -79,7 +80,7 @@
 			</tr>
 			{% endfor %}
 			<tr>
-				<td colspan="4">
+				<td colspan="5">
 					<a class="alert-link text-dark" href="{% url 'add_connection' dev.pk %}" data-toggle="tooltip" data-placement="top" title="добавить подключение">
 						<img src="{% static "img/add.png" %}" width="32" height="32">
 					</a>

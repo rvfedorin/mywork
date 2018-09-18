@@ -3,7 +3,7 @@
 {% block title %}Подключения{% endblock %}
 {% block head %} Путь до {{ to_dev.ip }} {% endblock %}
 {% block main %}
-		<table>
+		<table class="table table-hover w-50">
 			<tr>
 				{% for dev, color in path %}
 					<td align="center">
@@ -19,11 +19,11 @@
 					<td align="center" bgcolor="{{ color }}">
 						<a href="{% url 'connections_on_dev' dev.pk %}" title="Показать подключения на данном устройстве">{{ dev.ip }}</a>
 					</td>
-					<td>
+					<td align="center">
 						{% if forloop.last %}
-							-{{ dev.incoming_port }}port--CISCO
+							- {{ dev.incoming_port }}port--CISCO
 						{% else %}
-							-{{ dev.incoming_port }}port--{{ dev.up_connect_port }}port-
+							- {{ dev.incoming_port }}port --- {{ dev.up_connect_port }}port -
 						{% endif %}
 					</td>
 				{% endfor %}

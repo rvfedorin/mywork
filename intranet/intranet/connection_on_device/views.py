@@ -220,3 +220,41 @@ class DelConnection(TemplateView):
         self._to_del = ConnectionOnDevice.objects.get(pk=id_connection)
         self._to_del.delete()
         return redirect('connections_on_dev', self.id_dev)
+
+
+class EditConnection(TemplateView):
+    form = None
+    template_name = 'edit_connection.html'
+
+    def get(self, request, *args, **kwargs):
+        self.id_con = self.kwargs['id_con']
+        self.connection_instance = ConnectionOnDevice.objects.get(pk=self.id_con)
+        self.form = AddConnectionForm(instance=self.connection_instance)
+        self.connections, self.dev = on_device_get(request, self.kwargs['id_dev'])
+
+        return super(EditConnection, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(EditConnection, self).get_context_data(*args, **kwargs)
+        context['form'] = self.form
+        context['dev'] = self.dev
+        context['connections'] = self.connections
+        context['id_con'] = self.id_con
+        context['color'] = COLORS[self.dev.model.type]
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.form = AddConnectionForm(request.POST)
+        if self.form.is_valid():
+            connection = ConnectionOnDevice.objects.get(pk=self.kwargs['id_con'])
+            connection.id_dev = Device.objects.get(pk=self.kwargs['id_dev'])
+            connection.port = self.form.cleaned_data['port']
+            connection.connected = self.form.cleaned_data['connected']
+            connection.vlan = self.form.cleaned_data['vlan']
+            connection.ip_client = self.form.cleaned_data['ip_client']
+            connection.comment = self.form.cleaned_data['comment']
+            connection.save()
+            return redirect('connections_on_dev', self.kwargs['id_dev'])
+        else:
+            return super(EditConnection, self).get(request, *args, **kwargs)

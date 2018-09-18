@@ -17,7 +17,7 @@ from connection_on_device.models import ConnectionOnDevice
 
 class DeviceView(ListView):
     template_name = "dev_list.html"
-    paginate_by = 5
+    paginate_by = 12
 
 
     def __init__(self, *args, **kwargs):
