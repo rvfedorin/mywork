@@ -60,11 +60,18 @@
 				<td>
           			<a class="alert-link text-dark" href="{% url 'device_edit' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
 						<img src="{% static "img/edit.png" %}" width="20" height="20">
-					</a>
+					</a>	
+				</td>
+				<td>
 					<a href="{% url 'connections_on_dev' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Показать подключения на данном устройстве">
 						{{ dev.ip }}
-					</a>{{ dev.model.model }}
-					<a href="" data-toggle="modal" data-target="#deleteModal{{ dev.pk }}" ><img src="{% static "img/delete.png" %}" width="20" height="20"title="Удалить устройство"></a>
+					</a>
+				<td>
+					{{ dev.model.model }}
+				</td>
+				<td>
+						<a href="" data-toggle="modal" data-target="#deleteModal{{ dev.pk }}" ><img src="{% static "img/delete.png" %}" width="20" height="20"title="Удалить устройство"></a>
+				</td>
 
 						<!-- Modal -->
 						<div class="modal fade" id="deleteModal{{ dev.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModal{{ dev.pk }}" aria-hidden="true">

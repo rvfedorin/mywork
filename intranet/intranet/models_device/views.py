@@ -40,6 +40,7 @@ class DeviceView(ListView):
         all_dev = []
         try:
             reg = Cities.objects.filter(region=reg_id)
+
         except Cities.DoesNotExist:
             raise Http404('Device not found!')         
 
@@ -60,8 +61,14 @@ class DeviceView(ListView):
 
         if "city" in self.kwargs:
             self._action_list = [self._city, "city", "region"]
+            try:
+                Cities.objects.get(city=self.kwargs["city"])
+            except Cities.DoesNotExist: # if there is no such city
+                return redirect('device')
         elif "region" in self.kwargs:
             self._action_list = [self._region, "cities", "region"]
+            if not Cities.get_reg_id(self.kwargs["region"]): # if there is no such region
+                return redirect('device')
         else:
             self._action_list = [self._all_dev, "regions"]
             
@@ -79,6 +86,7 @@ class DeviceView(ListView):
 
     def get_queryset(self):
         return self._action_list[0]()
+
 
 
 class DeviceForm(forms.ModelForm):
