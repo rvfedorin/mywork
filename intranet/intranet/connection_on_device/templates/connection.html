@@ -23,14 +23,14 @@
 				<td>
 					сети&nbsp;
 				</td>				
-				<td bgcolor="{{ color }}">
+				<td bgcolor="{{ color }}" colspan="2">
 					<a href="{% url 'path_to_dev' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать путь до данного узла">{{ dev.ip }}</a>
 				</td>
 			</tr>
 			{% for connection in connections %}
 			<tr>
 				<td>
-          			<a class="alert-link text-dark" href="№" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
+          			<a class="alert-link text-dark" href="#" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
 						<img src="{% static "img/edit.png" %}" width="20" height="20">
 					</a>
 				</td>
@@ -44,7 +44,7 @@
 					{{ connection.port }}port{{ connection.vlan }}
 				</td>
 				<td>
-          			<a class="alert-link text-dark" href="№" data-toggle="tooltip" data-placement="top" title="Удалить устройство">
+          			<a class="alert-link text-dark" href="#" data-toggle="tooltip" data-placement="top" title="Удалить устройство">
 						<img src="{% static "img/delete.png" %}" width="20" height="20">
 					</a>
 				</td>
