@@ -15,9 +15,9 @@
 {% endblock %}
  
 {% block main %}
-		<table border="1" cellpadding="2">
+		<table class="table table-hover w-50">
 			<tr>
-				<td bgcolor="{{ color }}">
+				<td bgcolor="{{ color }}" colspan="2">
 					{{ dev.model.type }}&nbsp;{{ dev.model.model }}
 				</td>
 				<td>
@@ -30,6 +30,11 @@
 			{% for connection in connections %}
 			<tr>
 				<td>
+          			<a class="alert-link text-dark" href="№" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
+						<img src="{% static "img/edit.png" %}" width="20" height="20">
+					</a>
+				</td>
+				<td>
 					{{ connection.connected }}
 				</td>
 				<td>
@@ -38,10 +43,15 @@
 				<td>
 					{{ connection.port }}port{{ connection.vlan }}
 				</td>
+				<td>
+          			<a class="alert-link text-dark" href="№" data-toggle="tooltip" data-placement="top" title="Удалить устройство">
+						<img src="{% static "img/delete.png" %}" width="20" height="20">
+					</a>
+				</td>
 			</tr>
 			{% endfor %}
 			<tr>
-				<td colspan="3">
+				<td colspan="4">
 					<a class="alert-link text-dark" href="{% url 'add_connection' dev.pk %}" data-toggle="tooltip" data-placement="top" title="добавить подключение">
 						<img src="{% static "img/add.png" %}" width="32" height="32">
 					</a>
