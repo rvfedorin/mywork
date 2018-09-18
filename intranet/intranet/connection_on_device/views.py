@@ -208,3 +208,15 @@ class AddConnection(TemplateView):
             return redirect('connections_on_dev', id_dev=id_dev)
         else:
             return super(AddConnection, self).get(request, *args, **kwargs)
+
+
+class DelConnection(TemplateView):
+    form = None
+
+
+    def post(self, request, *args, **kwargs):
+        self.id_dev = self.kwargs['id_dev']
+        id_connection = request.POST['connection_to_delete']
+        self._to_del = ConnectionOnDevice.objects.get(pk=id_connection)
+        self._to_del.delete()
+        return redirect('connections_on_dev', self.id_dev)
