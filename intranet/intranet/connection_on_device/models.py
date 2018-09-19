@@ -1,7 +1,7 @@
 from django.db import models
-from models_device.models import Device
 
 # Create your models here.
+from models_device.models import Device
 
 class ConnectionOnDevice(models.Model):
     id_dev = models.ForeignKey(Device, on_delete=models.CASCADE, 
@@ -21,3 +21,4 @@ class ConnectionOnDevice(models.Model):
     class Meta:
     	verbose_name = "Подключенное оборудование/клиенты"
     	verbose_name_plural = "Подключенное оборудование/клиенты"
+

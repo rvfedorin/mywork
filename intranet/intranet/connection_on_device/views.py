@@ -3,6 +3,7 @@ from django.http import HttpResponse, Http404
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.forms import inlineformset_factory
 from django import forms
 
 import re
@@ -173,13 +174,17 @@ class AddConnectionForm(forms.ModelForm):
         fields = ["port", "connected", "vlan", "ip_client", "comment"]
 
 
+ConnectionOnDeviceFormset = inlineformset_factory(Device, ConnectionOnDevice, fields=("port", "connected", "vlan", "ip_client", "comment"))
+
 
 class AddConnection(TemplateView):
     form = None
+    # formset = None
     template_name = "add_connection.html"
 
     def get(self, request, *args, **kwargs):
         self.form = AddConnectionForm()
+        # self.formset = ConnectionOnDeviceFormset()
         self.connections, self.dev = on_device_get(request, self.kwargs['id_dev'])
 
         return super(AddConnection, self).get(request, *args, **kwargs)
@@ -187,6 +192,7 @@ class AddConnection(TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(AddConnection, self).get_context_data(*args, **kwargs)
         context['form'] = self.form
+        # context['formset'] = self.formset
         context['dev'] = self.dev
         context['connections'] = self.connections
         context['color'] = COLORS[self.dev.model.type]
@@ -195,6 +201,7 @@ class AddConnection(TemplateView):
 
     def post(self, request, *args, **kwargs):
         self.form = AddConnectionForm(request.POST)
+        # self.formset = ConnectionOnDeviceFormset(request.POST)
         id_dev = self.kwargs['id_dev']
 
         if self.form.is_valid():
