@@ -1,9 +1,17 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 # My 
 from cities.models import Cities, REGIONS
 
 # Create your models here.
+
+def validate_up_connect_ip(ip):
+    try:
+        form_connection_to_up.id_dev = Device.objects.get(ip=ip)
+    except Device.DoesNotExist:
+        raise ValidationError("Указанного вышестоящего оборудования не существует.")
+
 
 class ModelDevices(models.Model):
     type = models.CharField(max_length=30, verbose_name='Тип устройства')
@@ -27,7 +35,7 @@ class Device(models.Model):
     model = models.ForeignKey(ModelDevices, null=True, on_delete=models.SET_NULL, help_text='модель устройства', verbose_name='Модель')
     ip = models.GenericIPAddressField(unique=True, help_text='IP нового устройства', verbose_name='IP устройства')
     incoming_port = models.CharField(max_length=10, help_text='приходящий порт', default=1, verbose_name='Приходящий порт')
-    up_connect_ip = models.GenericIPAddressField(help_text='IP устройства от которого подключено', verbose_name='IP вышестоящего')
+    up_connect_ip = models.GenericIPAddressField(validators=[validate_up_connect_ip], help_text='IP устройства от которого подключено', verbose_name='IP вышестоящего')
     up_connect_port = models.CharField(max_length=10, help_text='порт подключения на вышестоящем устройстве', default=1, verbose_name='Порт вышестоящего')
     city = models.ForeignKey(Cities, on_delete=models.PROTECT, help_text='город подключения', verbose_name='Город')
     comment = models.TextField(blank=True, verbose_name='Комментарий', help_text='комментарий')

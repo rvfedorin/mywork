@@ -4,6 +4,7 @@ from django.core.paginator import InvalidPage
 from django.views.generic.list import ListView
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
+from django.contrib import messages
 from django import forms
 
 
@@ -93,10 +94,16 @@ class DeviceForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = ['model', 'ip', 'incoming_port', 'up_connect_ip', 'up_connect_port', 'city', 'comment']
+        error_messages = {'ip': {'unique': 'Устройство с таким IP уже существует.'}
+        }
+
 
 
 class DeviceDeleteForm(forms.Form):
     device_to_delete = forms.IntegerField()
+
+
+
 
 
 class DeviceCreate(TemplateView):

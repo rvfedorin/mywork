@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
+from django.contrib import messages
 from django import forms
 
 import re
@@ -205,6 +206,7 @@ class AddConnection(TemplateView):
             connection.ip_client = self.form.cleaned_data['ip_client']
             connection.comment = self.form.cleaned_data['comment']
             connection.save()
+            messages.add_message(request, messages.SUCCESS, "Подключение добавлено.")
             return redirect('connections_on_dev', id_dev=id_dev)
         else:
             return super(AddConnection, self).get(request, *args, **kwargs)
@@ -219,6 +221,8 @@ class DelConnection(TemplateView):
         id_connection = request.POST['connection_to_delete']
         self._to_del = ConnectionOnDevice.objects.get(pk=id_connection)
         self._to_del.delete()
+        messages.add_message(request, messages.SUCCESS, f"Подключение удалено.<br>{self._to_del} ")
+
         return redirect('connections_on_dev', self.id_dev)
 
 
@@ -255,6 +259,7 @@ class EditConnection(TemplateView):
             connection.ip_client = self.form.cleaned_data['ip_client']
             connection.comment = self.form.cleaned_data['comment']
             connection.save()
+            messages.add_message(request, messages.SUCCESS, "Изменения приняты.")
             return redirect('connections_on_dev', self.kwargs['id_dev'])
         else:
             return super(EditConnection, self).get(request, *args, **kwargs)

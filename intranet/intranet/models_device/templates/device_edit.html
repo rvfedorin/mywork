@@ -15,8 +15,16 @@
 		<div class="form-group">
 			{% csrf_token %}
 			{% for f in form %}
-					<small id="emailHelp" class="form-text text-muted">{{ f.help_text }}</small>
+				{% if f.errors|length > 0 %}
+					<small class="form-text text-muted">{{ f.help_text }}</small>
+					{{ f|addclass:'form-control w-25 border border-danger' }}
+					<small class="form-text text-muted w-25">
+						{{ f.errors }}
+					</small>
+				{% else %}
+					<small class="form-text text-muted">{{ f.help_text }}</small>
 					{{ f|addclass:'form-control w-25' }}
+				{% endif %}
 			{% endfor %}
 			<input class="btn btn-outline-secondary" type="submit" name="edit_device" value="Сохранить">
 		</div>

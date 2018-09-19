@@ -15,6 +15,15 @@
 {% endblock %}
  
 {% block main %}
+		{% if messages %}
+			{% for message in messages %}
+				{% if message.tags == "success" %} <div class="alert-success mb-2 w-50">
+				{% elif message.tags == "error" %} <div class="alert-danger mb-2 w-50">
+				{% else %} <div class="alert-secondary mb-2 w-50">{% endif %}
+					{% autoescape off %} {{ message }} {% endautoescape %}
+				</div>
+			{% endfor %}
+		{% endif %}
 		<table class="table table-hover w-50">
 			<tr>
 				<td bgcolor="{{ color }}" colspan="2">
@@ -61,7 +70,13 @@
 						      </div>
 						      <div class="modal-body">
 						        Удалить подключение:<br>
-						        <b>{{ connection.connected }}&nbsp;({{ connection.ip_client }})&nbsp;{{ connection.port }}port{{ connection.vlan }}</b>
+						        <b>{{ connection.connected }}
+						        	{% if connection.ip_client > 0 %}
+						        		({{ connection.ip_client }})&nbsp;
+						        	{% endif %}
+						    		{{ connection.port }}port
+									{{ connection.vlan }}
+								</b>
 						      </div>
 						      <div class="modal-footer">
 						        <form action="{% url 'del_connection' dev.pk %}" method="post">
