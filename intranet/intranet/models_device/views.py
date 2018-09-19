@@ -24,7 +24,7 @@ class DeviceView(ListView):
     def __init__(self, *args, **kwargs):
         super(DeviceView, self).__init__(*args, **kwargs)
 
-        self.regions = Cities.all_regions
+        self.regions = Cities.all_regions()
 
 
     def _city(self):
@@ -81,6 +81,19 @@ class DeviceView(ListView):
 
         for _key in self._action_list[1:]:
             self.context[_key] = self.kwargs[_key]
+            # forming string view 'Region2 (Orel, Kursk, Voronezh)'
+            # if _key == "regions":
+            #     cities = []
+            #     for region in self.regions:
+            #         _refion_with_sity_string = ""
+            #         _citys_in_region = Cities.objects.filter(region=Cities.get_reg_id(region))
+            #         _city_text = []
+            #         for city_obj in _citys_in_region:
+            #             _city_text.append(city_obj.city)
+            #         _refion_with_sity_string += f" ( {', '.join(_city_text)} )"
+            #         cities.append(_refion_with_sity_string)
+            #     self.context["regions"] = zip(self.regions, cities)
+                # end forming
 
         return self.context
 
@@ -101,9 +114,6 @@ class DeviceForm(forms.ModelForm):
 
 class DeviceDeleteForm(forms.Form):
     device_to_delete = forms.IntegerField()
-
-
-
 
 
 class DeviceCreate(TemplateView):

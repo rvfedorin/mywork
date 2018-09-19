@@ -44,7 +44,9 @@
 	  				</li>
   				<div class="dropdown-menu" aria-labelledby="dropdownMenu2">
 		{% for reg in regions %}
-					<a class="dropdown-item" href="{% url 'device' %}{{ reg }}/" title="Показать подключения в регионе {{ reg }}">{{ reg }}</a>
+					<a class="dropdown-item" href="{% url 'device' %}{{ reg }}/" title="Показать подключения в регионе {{ reg }}">
+						{{ reg }}
+					</a>
 		{% endfor %}
 				</div>
 			  </ol>
