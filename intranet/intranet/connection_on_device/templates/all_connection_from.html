@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block main %}
-		<table class="table table-hover w-50">
+		<table class="table table-sm table-hover w-50">
 		{% for dev, color, connection in connections %}
 		
 			<tr>
@@ -25,6 +25,9 @@
 				<td bgcolor="{{ color }}">
 					<a style="text-decoration:none;" href="{% url 'path_to_dev' dev.pk %}">{{ dev.ip }}</a>
 				</td>
+				<td>
+					комментарий&nbsp;
+				</td>	
 			</tr>
 			{% for connect in connection %}
 			<tr>
@@ -36,6 +39,9 @@
 				</td>
 				<td>
 					{{ connect.port }}port{{ connect.vlan }}
+				</td>
+				<td>
+					{{ connect.comment }}
 				</td>
 			</tr>
 			{% endfor %}

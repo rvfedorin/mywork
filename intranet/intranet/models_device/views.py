@@ -133,6 +133,8 @@ class DeviceCreate(TemplateView):
         self.form = DeviceForm(request.POST)
 
         if self.form.is_valid():
+            # Сохранение нового устройства
+            self.form.save()
 
             # Добавление нового устройства на подключение к порту вышестоящего
             connect_on_dev = self.form.cleaned_data['up_connect_ip']
@@ -143,10 +145,9 @@ class DeviceCreate(TemplateView):
                 form_connection_to_up.connected = f"DOWN to {self.form.cleaned_data['ip']}"
                 form_connection_to_up.save()
                 messages.add_message(request, messages.SUCCESS, 
-                    f"На {connect_on_dev} добавлено: DOWN to {self.form.cleaned_data['ip']} port {self.form.cleaned_data['up_connect_port']}")
+                    f"На вышестоящем {connect_on_dev} добавлено: <b>DOWN to {self.form.cleaned_data['ip']} port {self.form.cleaned_data['up_connect_port']}</b>")
           
-            # Сохранение нового устройства
-            self.form.save()
+
 
             # Добавление UP порта на новое устройство
             form_connection_to_me = ConnectionOnDevice()
@@ -154,6 +155,8 @@ class DeviceCreate(TemplateView):
             form_connection_to_me.port = self.form.cleaned_data['incoming_port']
             form_connection_to_me.connected = "UP"
             form_connection_to_me.save()
+            messages.add_message(request, messages.SUCCESS, 
+                    f"На новом {self.form.cleaned_data['ip']} добавлено: <b>UP to {self.form.cleaned_data['up_connect_ip']} port {self.form.cleaned_data['incoming_port']}</b>")
 
             return redirect('device')
         else:
@@ -182,7 +185,7 @@ class DeviceUpdate(TemplateView):
             # Сохранение нового устройства
             self.form.save()
 
-            # Редактирование нового устройства на подключение к порту вышестоящего connected
+            # Редактирование подключения нового устройства на порту вышестоящего connected
             connect_on_dev = self.form.cleaned_data['up_connect_ip']
             if connect_on_dev != '255.255.255.255':
                 form_connection_to_up = ConnectionOnDevice.objects.get(connected=f"DOWN to {self.form.cleaned_data['ip']}")
@@ -191,7 +194,7 @@ class DeviceUpdate(TemplateView):
                 form_connection_to_up.connected = f"DOWN to {self.form.cleaned_data['ip']}"
                 form_connection_to_up.save()
                 messages.add_message(request, messages.SUCCESS, 
-                    f"На {connect_on_dev} изменено: <b>DOWN to {self.form.cleaned_data['ip']} port {self.form.cleaned_data['up_connect_port']}</b>")
+                    f"На вышестоящем {connect_on_dev} изменено: <b>DOWN to {self.form.cleaned_data['ip']} port {self.form.cleaned_data['up_connect_port']}</b>")
 
             # Редактирование UP порта на редактируемом устройстве
             form_connection_to_me = ConnectionOnDevice.objects.filter(id_dev=dev).get(connected="UP")
@@ -200,7 +203,7 @@ class DeviceUpdate(TemplateView):
             form_connection_to_me.connected = "UP"
             form_connection_to_me.save()
             messages.add_message(request, messages.SUCCESS, 
-                    f"На {connect_on_dev} изменено: <b>UP to {self.form.cleaned_data['up_connect_ip']} port {self.form.cleaned_data['incoming_port']}</b>")
+                    f"На редактируемом {self.form.cleaned_data['ip']} изменено: <b>UP to {self.form.cleaned_data['up_connect_ip']} port {self.form.cleaned_data['incoming_port']}</b>")
           
 
             return redirect("device")
