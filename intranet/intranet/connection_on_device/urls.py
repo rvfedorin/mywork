@@ -1,9 +1,10 @@
 from django.urls import path
 
 from connection_on_device import views
+from models_device.views import DeviceView
 
 urlpatterns = [
-	path('', views.index, name='dev_list'),
+	path('', DeviceView.as_view(), name='dev_list'),
     path('<int:id_dev>/del_connection', views.DelConnection.as_view(), name='del_connection'),
     path('<int:id_dev>/edit_connection/<int:id_con>', views.EditConnection.as_view(), name='edit_connection'),
 	path('<int:id_dev>/path', views.path_to, name='path_to_dev'),

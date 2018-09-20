@@ -15,7 +15,7 @@
 {% endblock %}
  
 {% block main %}
-		<table class="table table-hover w-50">
+		<table class="table table-sm table-hover w-75">
 			<tr>
 				<td bgcolor="{{ color }}">
 					{{ dev.model.type }}&nbsp;{{ dev.model.model }}
@@ -25,6 +25,9 @@
 				</td>				
 				<td bgcolor="{{ color }}">
 					<a href="{% url 'path_to_dev' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать путь до данного узла">{{ dev.ip }}</a>
+				</td>
+				<td>
+					комментарий
 				</td>
 			</tr>
 			{% for connection in connections %}
@@ -38,6 +41,9 @@
 				<td>
 					{{ connection.port }}port{{ connection.vlan }}
 				</td>
+				<td>
+					{{ connection.comment }}
+				</td>
 			</tr>
 			{% endfor %}
 				<form action="" method="post">
@@ -46,8 +52,6 @@
 						<td>
 							<small class="form-text text-muted">{{ form.connected.help_text }}</small>
 							{{ form.connected }}
-							<small class="form-text text-muted">{{ form.comment.help_text }}</small>
-							{{ form.comment }}
 						</td>
 						<td>
 							<small class="form-text text-muted">{{ form.ip_client.help_text }}</small>
@@ -58,6 +62,10 @@
 							{{ form.port }}
 							<small class="form-text text-muted">{{ form.vlan.help_text }}</small>
 							{{ form.vlan }}
+						</td>
+						<td>
+							<small class="form-text text-muted">{{ form.comment.help_text }}</small>
+							{{ form.comment }}
 						</td>
 					</tr>
 					<tr>

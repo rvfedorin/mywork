@@ -3,7 +3,6 @@ from django.http import HttpResponse, Http404
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
 from django.contrib import messages
-from django.forms import inlineformset_factory
 from django import forms
 
 import re
@@ -166,7 +165,7 @@ class AddConnectionForm(forms.ModelForm):
         self.fields['connected'].widget.attrs.update({'class': 'form-control'})
         self.fields['vlan'].widget.attrs.update({'class': 'form-control'})
         self.fields['ip_client'].widget.attrs.update({'class': 'form-control'}, cols='20', rows='4')
-        self.fields['comment'].widget.attrs.update({'class': 'form-control'}, cols='20', rows='2')
+        self.fields['comment'].widget.attrs.update({'class': 'form-control'}, cols='20', rows='1')
 
 
     class Meta:
@@ -174,17 +173,12 @@ class AddConnectionForm(forms.ModelForm):
         fields = ["port", "connected", "vlan", "ip_client", "comment"]
 
 
-ConnectionOnDeviceFormset = inlineformset_factory(Device, ConnectionOnDevice, fields=("port", "connected", "vlan", "ip_client", "comment"))
-
-
 class AddConnection(TemplateView):
     form = None
-    # formset = None
     template_name = "add_connection.html"
 
     def get(self, request, *args, **kwargs):
         self.form = AddConnectionForm()
-        # self.formset = ConnectionOnDeviceFormset()
         self.connections, self.dev = on_device_get(request, self.kwargs['id_dev'])
 
         return super(AddConnection, self).get(request, *args, **kwargs)
@@ -192,17 +186,16 @@ class AddConnection(TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super(AddConnection, self).get_context_data(*args, **kwargs)
         context['form'] = self.form
-        # context['formset'] = self.formset
         context['dev'] = self.dev
         context['connections'] = self.connections
         context['color'] = COLORS[self.dev.model.type]
 
         return context
 
+
     def post(self, request, *args, **kwargs):
-        self.form = AddConnectionForm(request.POST)
-        # self.formset = ConnectionOnDeviceFormset(request.POST)
         id_dev = self.kwargs['id_dev']
+        self.form = AddConnectionForm(request.POST)
 
         if self.form.is_valid():
             connection = ConnectionOnDevice()
@@ -213,7 +206,7 @@ class AddConnection(TemplateView):
             connection.ip_client = self.form.cleaned_data['ip_client']
             connection.comment = self.form.cleaned_data['comment']
             connection.save()
-            messages.add_message(request, messages.SUCCESS, "Подключение добавлено.")
+            messages.add_message(request, messages.SUCCESS, "<b>Подключение добавлено.</b>")
             return redirect('connections_on_dev', id_dev=id_dev)
         else:
             return super(AddConnection, self).get(request, *args, **kwargs)
@@ -228,7 +221,7 @@ class DelConnection(TemplateView):
         id_connection = request.POST['connection_to_delete']
         self._to_del = ConnectionOnDevice.objects.get(pk=id_connection)
         self._to_del.delete()
-        messages.add_message(request, messages.SUCCESS, f"Подключение удалено.<br>{self._to_del} ")
+        messages.add_message(request, messages.SUCCESS, f"<b>Подключение удалено.<br>{self._to_del}</b>")
 
         return redirect('connections_on_dev', self.id_dev)
 

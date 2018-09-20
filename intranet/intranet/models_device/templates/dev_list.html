@@ -56,7 +56,16 @@
 {% endblock %}
 
 {% block main %}
-			<table class="table table-hover w-50">
+		{% if messages %}
+			{% for message in messages %}
+				{% if message.tags == "success" %} <div class="alert-success mb-2 w-50">
+				{% elif message.tags == "error" %} <div class="alert-danger mb-2 w-50">
+				{% else %} <div class="alert-secondary mb-2 w-50">{% endif %}
+					{% autoescape off %} {{ message }} {% endautoescape %}
+				</div>
+			{% endfor %}
+		{% endif %}
+			<table class="table table-sm table-hover w-50">
 			{% for dev in object_list %}
 			<tr>
 				<td>

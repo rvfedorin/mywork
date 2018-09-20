@@ -7,10 +7,11 @@ from cities.models import Cities, REGIONS
 # Create your models here.
 
 def validate_up_connect_ip(ip):
-    try:
-        form_connection_to_up.id_dev = Device.objects.get(ip=ip)
-    except Device.DoesNotExist:
-        raise ValidationError("Указанного вышестоящего оборудования не существует.")
+    if ip != '255.255.255.255':
+        try:
+            id_dev = Device.objects.get(ip=ip)
+        except Device.DoesNotExist:
+            raise ValidationError("Указанного вышестоящего оборудования не существует.")
 
 
 class ModelDevices(models.Model):

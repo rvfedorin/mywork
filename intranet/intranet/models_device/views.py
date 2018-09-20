@@ -136,12 +136,14 @@ class DeviceCreate(TemplateView):
 
             # Добавление нового устройства на подключение к порту вышестоящего
             connect_on_dev = self.form.cleaned_data['up_connect_ip']
-
-            form_connection_to_up = ConnectionOnDevice()
-            form_connection_to_up.id_dev = Device.objects.get(ip=connect_on_dev)
-            form_connection_to_up.port = self.form.cleaned_data['up_connect_port']
-            form_connection_to_up.connected = self.form.cleaned_data['ip']
-            form_connection_to_up.save()
+            if connect_on_dev != '255.255.255.255':
+                form_connection_to_up = ConnectionOnDevice()
+                form_connection_to_up.id_dev = Device.objects.get(ip=connect_on_dev)
+                form_connection_to_up.port = self.form.cleaned_data['up_connect_port']
+                form_connection_to_up.connected = f"DOWN to {self.form.cleaned_data['ip']}"
+                form_connection_to_up.save()
+                messages.add_message(request, messages.SUCCESS, 
+                    f"На {connect_on_dev} добавлено: DOWN to {self.form.cleaned_data['ip']} port {self.form.cleaned_data['up_connect_port']}")
           
             # Сохранение нового устройства
             self.form.save()
@@ -177,25 +179,28 @@ class DeviceUpdate(TemplateView):
         dev = Device.objects.get(pk = self.kwargs['dev_id'])
         self.form = DeviceForm(request.POST, instance=dev)
         if self.form.is_valid():
-
-            # Редактирование нового устройства на подключение к порту вышестоящего connected
-            connect_on_dev = self.form.cleaned_data['up_connect_ip']
-
-            form_connection_to_up = ConnectionOnDevice.objects.get(connected=self.form.cleaned_data['ip'])
-            form_connection_to_up.id_dev = Device.objects.get(ip=connect_on_dev)
-            form_connection_to_up.port = self.form.cleaned_data['up_connect_port']
-            form_connection_to_up.connected = self.form.cleaned_data['ip']
-            form_connection_to_up.save()
-
             # Сохранение нового устройства
             self.form.save()
 
-            # Редактирование UP порта на новом устройстве
-            form_connection_to_me = ConnectionOnDevice.objects.get(id_dev=dev)
+            # Редактирование нового устройства на подключение к порту вышестоящего connected
+            connect_on_dev = self.form.cleaned_data['up_connect_ip']
+            if connect_on_dev != '255.255.255.255':
+                form_connection_to_up = ConnectionOnDevice.objects.get(connected=f"DOWN to {self.form.cleaned_data['ip']}")
+                form_connection_to_up.id_dev = Device.objects.get(ip=connect_on_dev)
+                form_connection_to_up.port = self.form.cleaned_data['up_connect_port']
+                form_connection_to_up.connected = f"DOWN to {self.form.cleaned_data['ip']}"
+                form_connection_to_up.save()
+                messages.add_message(request, messages.SUCCESS, 
+                    f"На {connect_on_dev} изменено: <b>DOWN to {self.form.cleaned_data['ip']} port {self.form.cleaned_data['up_connect_port']}</b>")
+
+            # Редактирование UP порта на редактируемом устройстве
+            form_connection_to_me = ConnectionOnDevice.objects.filter(id_dev=dev).get(connected="UP")
             form_connection_to_me.id_dev = Device.objects.get(ip=self.form.cleaned_data['ip'])
             form_connection_to_me.port = self.form.cleaned_data['incoming_port']
             form_connection_to_me.connected = "UP"
             form_connection_to_me.save()
+            messages.add_message(request, messages.SUCCESS, 
+                    f"На {connect_on_dev} изменено: <b>UP to {self.form.cleaned_data['up_connect_ip']} port {self.form.cleaned_data['incoming_port']}</b>")
           
 
             return redirect("device")
