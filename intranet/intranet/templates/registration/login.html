@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Вход{% endblock %}
+{% block main %}
+	{% load myfilters %}
+	<h4>Вход</h4>
+	<form action="" method="post">
+		<table>
+			<tr>
+				<td>
+		{% csrf_token %}
+					<small class="form-text text-muted">Имя пользователя:</small>
+					{{ form.username|addclass:'form-control border' }}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<small class="form-text text-muted">Пароль:</small>
+					{{ form.password|addclass:'form-control border' }}
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<input class="btn btn-outline-secondary" type="submit" name="add_device" value="Войти">
+					<input type="hidden" name="next" value="{{ next }}">
+				</td>
+			</tr>
+		</table>
+	</form>
+{% endblock %}

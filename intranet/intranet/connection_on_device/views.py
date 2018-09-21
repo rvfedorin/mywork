@@ -38,7 +38,18 @@ def on_device_get(request, id_dev):
         vlan = f'/{connection.vlan}vlan'
 
         if connection.connected == 'UP':
-            connection.connected = f'UP to {dev.up_connect_port} port on {dev.model.type} {dev.up_connect_ip}'
+            try:
+                up_dev = Device.objects.get(ip=dev.up_connect_ip)
+                connection.connected = (f'UP to {dev.up_connect_port} port on {dev.model.type} {dev.up_connect_ip}', up_dev)
+            except Device.DoesNotExist:
+                connection.connected = f'UP to {dev.up_connect_port} port on {dev.model.type} {dev.up_connect_ip}'
+        elif 'DOWN to ' in connection.connected:
+            try:
+                print(connection.connected[8:])
+                down_dev = Device.objects.get(ip=connection.connected[8:])
+                connection.connected = (connection.connected, down_dev)
+            except Device.DoesNotExist:
+                connection.connected = connection.connected
  
         if connection.vlan != "Null":
             connection.vlan = vlan
@@ -125,7 +136,7 @@ def all_connection_port(dev, connections_dev):
 
         if connection.connected == 'UP':
             connection.connected = f'UP to {dev.up_connect_port} port on {dev.model.type} {dev.up_connect_ip}'
- 
+
         if connection.vlan != "Null":
             connection.vlan = vlan
         else:
@@ -195,11 +206,12 @@ class AddConnection(TemplateView):
 
     def post(self, request, *args, **kwargs):
         id_dev = self.kwargs['id_dev']
+        dev = Device.objects.get(pk=id_dev)
         self.form = AddConnectionForm(request.POST)
 
         if self.form.is_valid():
             connection = ConnectionOnDevice()
-            connection.id_dev = Device.objects.get(pk=id_dev)
+            connection.id_dev = dev
             connection.port = self.form.cleaned_data['port']
             connection.connected = self.form.cleaned_data['connected']
             connection.vlan = self.form.cleaned_data['vlan']

@@ -27,20 +27,41 @@
       <div class="container mw-100 p-2">
         <div class="row">
           <div class="col">
-            <a class="alert-link text-dark" href="{% url 'device_add' %}">Добавить устройство</a>
+            <table>
+              <tr>
+                <td>
+                  <a class="alert-link text-dark" href="{% url 'device_add' %}">Добавить устройство</a>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="alert-link text-dark" href="#">Поиск устройства</a>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a class="alert-link text-dark" href="#">Поиск клиента</a>
+                </td>
+              </tr>
+            </table>
+            
           </div>
           <div class="col-10">
 
                 <div class="row">
                   <div class="col">
+                    <small>
                     {% block head %}
                     {% endblock %}
+                    </small>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col">
+                    <small>
                     {% block main %}
                     {% endblock %}
+                    </small>
                   </div>
                 </div>
 

@@ -24,7 +24,7 @@
 				</div>
 			{% endfor %}
 		{% endif %}
-		<table class="table table-sm table-hover w-50">
+		<table class="table table-sm p-0 table-hover w-75">
 			<tr>
 				<td bgcolor="{{ color }}" colspan="2">
 					{{ dev.model.type }}&nbsp;{{ dev.model.model }}
@@ -33,7 +33,7 @@
 					сети&nbsp;
 				</td>				
 				<td bgcolor="{{ color }}">
-					<a href="{% url 'path_to_dev' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать путь до данного узла">{{ dev.ip }}</a>
+					<a href="{% url 'path_to_dev' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать путь до данного узла">{{ dev.ip }}</a> {{ dev.comment }}
 				</td>
 				<td>
 					комментарий
@@ -48,7 +48,12 @@
 					</a>
 				</td>
 				<td>
-					{{ connection.connected }}
+					{% if 'UP to' in connection.connected.0 or 'DOWN to' in connection.connected.0 %}
+						<a href="{% url 'connections_on_dev' connection.connected.1.pk %}" data-toggle="tooltip" data-placement="top" 
+						title="Показать подключения на данном устройстве">{{ connection.connected.0 }}</a>
+					{% else %}
+						{{ connection.connected }}
+					{% endif %}
 				</td>
 				<td>
 					{{ connection.ip_client }}

@@ -25,7 +25,7 @@ SECRET_KEY = 'uo5b$w048us-h_-)k$$b8+l9yve=672e%n8e*@%(-to@t&$)o('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.40.17']
 
 
 # Application definition
@@ -125,3 +125,7 @@ STATICFILES_DIRS = (
 )
 
 STATIC_URL = '/static/'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'device'
+
