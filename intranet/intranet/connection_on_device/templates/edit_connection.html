@@ -59,7 +59,12 @@
 					{% else %}
 						<tr>
 							<td>
-								{{ connection.connected }}
+								{% if 'UP to' in connection.connected.0 or 'DOWN to' in connection.connected.0 %}
+									<a href="{% url 'connections_on_dev' connection.connected.1.pk %}" data-toggle="tooltip" data-placement="top" 
+									title="Показать подключения на данном устройстве">{{ connection.connected.0 }}</a>
+								{% else %}
+									{{ connection.connected }}
+								{% endif %}
 							</td>
 							<td>
 								{{ connection.ip_client }}

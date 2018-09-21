@@ -14,21 +14,22 @@
 {% block main %}
 		<table class="table table-sm table-hover w-50">
 		{% for dev, color, connection in connections %}
-		
+			<thead>
 			<tr>
-				<td bgcolor="{{ color }}">
+				<th bgcolor="{{ color }}">
 					{{ dev.model.type }}&nbsp;{{ dev.model.model }}
-				</td>
-				<td>
+				</th>
+				<th>
 					сети&nbsp;
-				</td>				
-				<td bgcolor="{{ color }}">
+				</th>				
+				<th bgcolor="{{ color }}">
 					<a style="text-decoration:none;" href="{% url 'path_to_dev' dev.pk %}">{{ dev.ip }}</a>
-				</td>
-				<td>
+				</th>
+				<th>
 					комментарий&nbsp;
-				</td>	
+				</th>	
 			</tr>
+		</thead>
 			{% for connect in connection %}
 			<tr>
 				<td>

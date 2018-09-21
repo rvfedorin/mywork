@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import redirect
 from django.contrib import messages
 from django import forms
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
 from models_device.models import Device, ModelDevices
@@ -116,9 +117,10 @@ class DeviceDeleteForm(forms.Form):
     device_to_delete = forms.IntegerField()
 
 
-class DeviceCreate(TemplateView):
+class DeviceCreate(PermissionRequiredMixin, TemplateView):
     form = None
     template_name = "device_add.html"
+    permission_required = ("models_device.can_add")
 
     def get(self, request, *args, **kwargs):
         self.form = DeviceForm()
@@ -163,9 +165,10 @@ class DeviceCreate(TemplateView):
             return super(DeviceCreate, self).get(request, *args, **kwargs)
 
 
-class DeviceUpdate(TemplateView):
+class DeviceUpdate(PermissionRequiredMixin, TemplateView):
     form = None
     template_name = 'device_edit.html'
+    permission_required = ("models_device.can_edit")
 
     def get(self, request, *args, **kwargs):
         self.dev = Device.objects.get(pk = self.kwargs['dev_id'])
@@ -211,8 +214,9 @@ class DeviceUpdate(TemplateView):
             return super(DeviceUpdate, self).get(request, *args, **kwargs)
 
 
-class DeviceDelete(TemplateView):
+class DeviceDelete(PermissionRequiredMixin, TemplateView):
     form = None
+    permission_required = ("models_device.can_delete")
 
     def post(self, request, *args, **kwargs):
         form = DeviceDeleteForm(request.POST)

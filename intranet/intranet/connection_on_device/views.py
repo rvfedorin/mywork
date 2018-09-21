@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import redirect
 from django.contrib import messages
 from django import forms
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 import re
 
@@ -184,9 +185,10 @@ class AddConnectionForm(forms.ModelForm):
         fields = ["port", "connected", "vlan", "ip_client", "comment"]
 
 
-class AddConnection(TemplateView):
+class AddConnection(PermissionRequiredMixin, TemplateView):
     form = None
     template_name = "add_connection.html"
+    permission_required = ('connection_on_device.can_add', )
 
     def get(self, request, *args, **kwargs):
         self.form = AddConnectionForm()
@@ -224,23 +226,25 @@ class AddConnection(TemplateView):
             return super(AddConnection, self).get(request, *args, **kwargs)
 
 
-class DelConnection(TemplateView):
+class DelConnection(PermissionRequiredMixin, TemplateView):
     form = None
+    permission_required = ('connection_on_device.can_delete', )
 
 
     def post(self, request, *args, **kwargs):
-        self.id_dev = self.kwargs['id_dev']
+        id_dev = self.kwargs['id_dev']
         id_connection = request.POST['connection_to_delete']
         self._to_del = ConnectionOnDevice.objects.get(pk=id_connection)
         self._to_del.delete()
         messages.add_message(request, messages.SUCCESS, f"<b>Подключение удалено.<br>{self._to_del}</b>")
 
-        return redirect('connections_on_dev', self.id_dev)
+        return redirect('connections_on_dev', id_dev)
 
 
-class EditConnection(TemplateView):
+class EditConnection(PermissionRequiredMixin, TemplateView):
     form = None
     template_name = 'edit_connection.html'
+    permission_required = ('connection_on_device.can_edit', )
 
     def get(self, request, *args, **kwargs):
         self.id_con = self.kwargs['id_con']
