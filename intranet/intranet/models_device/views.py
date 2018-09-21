@@ -60,7 +60,7 @@ class DeviceView(ListView):
 
 
     def get(self, request, *args, **kwargs):
-
+        current_user = request.user
         if "city" in self.kwargs:
             self._action_list = [self._city, "city", "region"]
             try:
@@ -117,14 +117,20 @@ class DeviceDeleteForm(forms.Form):
     device_to_delete = forms.IntegerField()
 
 
-class DeviceCreate(PermissionRequiredMixin, TemplateView):
+class DeviceCreate(TemplateView):
     form = None
     template_name = "device_add.html"
-    permission_required = ("models_device.can_add")
+
 
     def get(self, request, *args, **kwargs):
-        self.form = DeviceForm()
-        return super(DeviceCreate, self).get(request, *args, **kwargs)
+        if request.user.is_authenticated:
+            if request.user.has_perm("models_device.can_add"):
+                self.form = DeviceForm()
+                return super(DeviceCreate, self).get(request, *args, **kwargs)
+            else:
+                return redirect("/login/?next=", request.path)
+        else:
+            return redirect("/login/?next=", request.path)    
 
     def get_context_data(self, **kwargs):
         context = super(DeviceCreate, self).get_context_data(**kwargs)

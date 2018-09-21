@@ -69,9 +69,11 @@
 			{% for dev in object_list %}
 			<tr>
 				<td>
-          			<a class="alert-link text-dark" href="{% url 'device_edit' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
-						<img src="{% static "img/edit.png" %}" width="20" height="20">
-					</a>	
+					{% if perms.models_device.change_device %}
+	          			<a class="alert-link text-dark" href="{% url 'device_edit' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
+							<img src="{% static "img/edit.png" %}" width="20" height="20">
+						</a>
+					{% endif %}	
 				</td>
 				<td>
 					<a href="{% url 'connections_on_dev' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Показать подключения на данном устройстве">
@@ -84,8 +86,8 @@
 					{{ dev.model.model }}
 				</td>
 				<td>
+					{% if perms.models_device.delete_device %}
 						<a href="" data-toggle="modal" data-target="#deleteModal{{ dev.pk }}" ><img src="{% static "img/delete.png" %}" width="20" height="20"title="Удалить устройство"></a>
-				</td>
 
 						<!-- Modal -->
 						<div class="modal fade" id="deleteModal{{ dev.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModal{{ dev.pk }}" aria-hidden="true">
@@ -113,6 +115,11 @@
 						    </div>
 						  </div>
 						</div>
+						
+					{% endif %}	
+				</td>
+
+
 				</td>
 			</tr>
 			{% endfor %}
