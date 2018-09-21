@@ -24,6 +24,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(),
     {'template_name': "login.html",
     'extra_context': {}}, name='login'),
+    path('logout/', auth_views.LoginView.as_view(), name='logout'),
     path('', DeviceView.as_view(), name='device'),
     path('device/', include('models_device.urls')),
     path('connection/', include('connection_on_device.urls')),
