@@ -124,7 +124,8 @@ class DeviceCreate(TemplateView):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            if request.user.has_perm("models_device.can_add"):
+            if request.user.has_perm("models_device.add_device"):
+                print(request.user)
                 self.form = DeviceForm()
                 return super(DeviceCreate, self).get(request, *args, **kwargs)
             else:
@@ -174,7 +175,7 @@ class DeviceCreate(TemplateView):
 class DeviceUpdate(PermissionRequiredMixin, TemplateView):
     form = None
     template_name = 'device_edit.html'
-    permission_required = ("models_device.can_edit")
+    permission_required = ("models_device.change_device")
 
     def get(self, request, *args, **kwargs):
         self.dev = Device.objects.get(pk = self.kwargs['dev_id'])
@@ -222,7 +223,7 @@ class DeviceUpdate(PermissionRequiredMixin, TemplateView):
 
 class DeviceDelete(PermissionRequiredMixin, TemplateView):
     form = None
-    permission_required = ("models_device.can_delete")
+    permission_required = ("models_device.delete_device")
 
     def post(self, request, *args, **kwargs):
         form = DeviceDeleteForm(request.POST)
