@@ -83,6 +83,7 @@ class DeviceView(ListView):
         for _key in self._action_list[1:]:
             self.context[_key] = self.kwargs[_key]
             # forming string view 'Region2 (Orel, Kursk, Voronezh)'
+            #
             # if _key == "regions":
             #     cities = []
             #     for region in self.regions:

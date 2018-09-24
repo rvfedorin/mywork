@@ -1,2 +1,3 @@
 *.xml
-**/*.pyc
+*.pyc
+/intranet/**/__pycache__
