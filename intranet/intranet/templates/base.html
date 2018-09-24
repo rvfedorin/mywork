@@ -21,7 +21,10 @@
           </div>
           <div class="col" align="right">
              {% if user.is_authenticated %}
-              <a class="text-light" href="{% url 'logout' %}">Выйти</a>
+              <table>
+                <tr><td class="text-white"><b>{{ user }}</b></td></tr>
+                <tr><td><a class="text-light" href="{% url 'logout' %}">Выйти</a></td></tr>
+              </table>
              {% else %}
               <a class="text-light" href="{% url 'login' %}">Войти</a>
              {% endif %}
