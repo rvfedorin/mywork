@@ -50,13 +50,8 @@ class PathToCityMixin(ContextMixin):
     def get(self, request, *args, **kwargs):
         current_user = request.user
         if "city" in self.kwargs:
-            self._action_list = [self._city, "city", "region"]
-            try:
-                Cities.objects.get(city=self.kwargs["city"])
-            except Cities.DoesNotExist: # if there is no such city
-                return redirect('device')
-        elif "region" in self.kwargs:
-            self._action_list = [self._region, "cities", "region"]
+            self._action_list = [self._city, "city", "region", "regions", "cities"]
+            self.kwargs["regions"] = self.regions
             if Cities.get_reg_id(self.kwargs["region"]): # if there is such region
                 reg_id = Cities.get_reg_id(self.kwargs["region"])
                 try:
@@ -64,6 +59,20 @@ class PathToCityMixin(ContextMixin):
                 except Cities.DoesNotExist:
                     raise Http404('Device not found!') 
                 self.kwargs["cities"] = self.reg
+            try:
+                Cities.objects.get(city=self.kwargs["city"])
+            except Cities.DoesNotExist: # if there is no such city
+                return redirect('device')
+        elif "region" in self.kwargs:
+            self._action_list = [self._region, "cities", "region", "regions"]
+            if Cities.get_reg_id(self.kwargs["region"]): # if there is such region
+                reg_id = Cities.get_reg_id(self.kwargs["region"])
+                try:
+                    self.reg = Cities.objects.filter(region=reg_id)
+                except Cities.DoesNotExist:
+                    raise Http404('Device not found!') 
+                self.kwargs["cities"] = self.reg
+                self.kwargs["regions"] = self.regions
             else:
                 return redirect('device')
         else:
