@@ -2,11 +2,56 @@
 
 {% block title %}Добаление устройства{% endblock %}
 {% block head %}
+
+	{% if region %}
+{# Если регион выбран, выводим его название #}
+		
+{# Если город выбран, выводим его название #}
+		{% if city %}
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
 		  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Все регионы</a></li>
+		    <li class="breadcrumb-item"><a href="{% url 'dev_list_region' region %}">{{ region }}</a></li>
+		    <li class="breadcrumb-item active" aria-current="page">{{ city }} </li>
 		  </ol>
 		</nav>
+
+		{% else %}
+{# Если город не выбран, выводим список городов при выбранном регионе #}
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb">
+			  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Все регионы</a></li>
+			    <li class="breadcrumb-item active" aria-current="page">{{ region }} </li>
+	  				<li class="breadcrumb-item dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    				<a href="#">Выбрать город</a>
+	  				</li>
+	  				<div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+				{% for city in cities %}
+						<a class="dropdown-item" href="{% url 'dev_list_city' region city.city %}" title="Показать подключения в городе {{ city.city }}">{{ city.city }}</a>
+				{% endfor %}
+					</div>
+			  </ol>
+			</nav>
+		{% endif %}
+{# Если регион не выбран, выводим список регионов #}
+	{% else %}
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb">
+			  	<li class="breadcrumb-item active">Все регионы</li>
+	  				<li class="breadcrumb-item dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	    				<a href="#">Выбрать регион</a>
+	  				</li>
+  				<div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+		{% for reg in regions %}
+					<a class="dropdown-item" href="{% url 'device' %}{{ reg }}/" title="Показать подключения в регионе {{ reg }}">
+						{{ reg }}
+					</a>
+		{% endfor %}
+				</div>
+			  </ol>
+			</nav>
+
+	{% endif %}
 {% endblock %}
 
 {% block main %}
