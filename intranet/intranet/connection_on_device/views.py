@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django import forms
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.mail import send_mail
 
 import re
 
@@ -237,6 +238,16 @@ class DelConnection(PermissionRequiredMixin, TemplateView):
         self._to_del = ConnectionOnDevice.objects.get(pk=id_connection)
         self._to_del.delete()
         messages.add_message(request, messages.SUCCESS, f"<b>Подключение удалено.<br>{self._to_del}</b>")
+        # mail_message = f"""Удалено подключение:
+        #     {self._to_del}
+        #     """
+        # send_mail(
+        #     'Изменения в интранете.',
+        #     mail_message,
+        #     'r.fedorin@orel.ptl.ru',
+        #     ['r.fedorin@orel.ptl.ru'],
+        #     fail_silently=False,
+        # )
 
         return redirect('connections_on_dev', id_dev)
 
@@ -267,7 +278,9 @@ class EditConnection(PermissionRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         self.form = AddConnectionForm(request.POST)
         if self.form.is_valid():
+            old_connection = ConnectionOnDevice.objects.get(pk=self.kwargs['id_con'])
             connection = ConnectionOnDevice.objects.get(pk=self.kwargs['id_con'])
+
             connection.id_dev = Device.objects.get(pk=self.kwargs['id_dev'])
             connection.port = self.form.cleaned_data['port']
             connection.connected = self.form.cleaned_data['connected']
@@ -276,6 +289,17 @@ class EditConnection(PermissionRequiredMixin, TemplateView):
             connection.comment = self.form.cleaned_data['comment']
             connection.save()
             messages.add_message(request, messages.SUCCESS, "Изменения приняты.")
+
+            mail_message = f"""Изменения приняты:
+            устройство({'без изменений' if old_connection.id_dev == connection.id_dev else '--- изменено ---'}): {connection.id_dev.ip} 
+            порт({'без изменений' if old_connection.port == connection.port else '--- изменено ---'}): {connection.port} 
+            подключение({'без изменений' if old_connection.connected == connection.connected else '--- изменено ---'}): {connection.connected} 
+            влан({'без изменений' if old_connection.vlan == connection.vlan else '--- изменено ---'}): {connection.vlan} 
+            ip клиента({'без изменений' if old_connection.ip_client == connection.ip_client else '--- изменено ---'}): {connection.ip_client} 
+            комментарий({'без изменений' if old_connection.comment == connection.comment else '--- изменено ---'}): {connection.comment} 
+            """
+
+
             return redirect('connections_on_dev', self.kwargs['id_dev'])
         else:
             return super(EditConnection, self).get(request, *args, **kwargs)
