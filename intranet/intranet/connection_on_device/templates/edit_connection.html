@@ -6,9 +6,10 @@
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
 		  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Список устройств</a></li>
-		    <li class="breadcrumb-item"><a href="{% url 'all_connection' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать все подключения от этого узла">
-									    	Показать все подключения от {{ dev.ip }}
-										</a>
+		    <li class="breadcrumb-item">
+		    	<a href="{% url 'all_connection' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать все подключения от этого узла">
+					Показать все подключения от {{ dev.ip }}
+				</a>
 			</li>
 		  </ol>
 		</nav>

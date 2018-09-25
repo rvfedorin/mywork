@@ -6,9 +6,10 @@
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
 		  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Список устройств</a></li>
-		    <li class="breadcrumb-item"><a href="{% url 'all_connection' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать все подключения от этого узла">
-									    	Показать все подключения от {{ dev.ip }}
-										</a>
+		    <li class="breadcrumb-item">
+		    	<a href="{% url 'all_connection' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать все подключения от этого узла">
+			    	Показать все подключения от {{ dev.ip }}
+				</a>
 			</li>
 		  </ol>
 		</nav>
@@ -42,7 +43,7 @@
 			{% for connection in connections %}
 			<tr>
 				<td>
-					{% if perms.connection_on_device.change_ConnectionOnDevice %}
+					{% if perms.connection_on_device.change_connectionondevice %}
           			<a class="alert-link text-dark" 
           			href="{% url 'edit_connection' dev.pk connection.pk %}" data-toggle="tooltip" data-placement="left" title="Редактировать подключение">
 						<img src="{% static "img/edit.png" %}" width="20" height="20">
@@ -67,7 +68,7 @@
 					{{ connection.comment }}
 				</td>
 				<td>
-					{% if perms.connection_on_device.delete_ConnectionOnDevice %}
+					{% if perms.connection_on_device.delete_connectionondevice %}
 						<a href="" data-toggle="modal" data-target="#deleteModal{{ connection.pk }}" >
 							<img src="{% static "img/delete.png" %}" width="20" height="20"title="Удалить подключение">
 						</a>
@@ -111,7 +112,7 @@
 			{% endfor %}
 			<tr>
 				<td colspan="5">
-					{% if perms.connection_on_device.add_ConnectionOnDevice %}
+					{% if perms.connection_on_device.add_connectionondevice %}
 					<a class="alert-link text-dark" href="{% url 'add_connection' dev.pk %}" data-toggle="tooltip" data-placement="top" title="добавить подключение">
 						<img src="{% static "img/add.png" %}" width="32" height="32">
 					</a>

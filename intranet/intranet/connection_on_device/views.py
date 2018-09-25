@@ -188,7 +188,7 @@ class AddConnectionForm(forms.ModelForm):
 class AddConnection(PermissionRequiredMixin, TemplateView):
     form = None
     template_name = "add_connection.html"
-    permission_required = ('connection_on_device.can_add', )
+    permission_required = ('connection_on_device.add_connectionondevice', )
 
     def get(self, request, *args, **kwargs):
         self.form = AddConnectionForm()
@@ -228,7 +228,7 @@ class AddConnection(PermissionRequiredMixin, TemplateView):
 
 class DelConnection(PermissionRequiredMixin, TemplateView):
     form = None
-    permission_required = ('connection_on_device.can_delete', )
+    permission_required = ('connection_on_device.delete_connectionondevice', )
 
 
     def post(self, request, *args, **kwargs):
@@ -244,7 +244,7 @@ class DelConnection(PermissionRequiredMixin, TemplateView):
 class EditConnection(PermissionRequiredMixin, TemplateView):
     form = None
     template_name = 'edit_connection.html'
-    permission_required = ('connection_on_device.can_edit', )
+    permission_required = ('connection_on_device.change_connectionondevice', )
 
     def get(self, request, *args, **kwargs):
         self.id_con = self.kwargs['id_con']
