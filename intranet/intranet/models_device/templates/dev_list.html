@@ -70,10 +70,27 @@
 			<tr>
 				<td>
 					{% if perms.models_device.change_device %}
-	          			<a class="alert-link text-dark" href="{% url 'device_edit' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
-							<img src="{% static "img/edit.png" %}" width="20" height="20">
-						</a>
-					{% endif %}	
+	          			{% if region %}
+						{# Если регион выбран, выводим его название #}
+						    
+						{# Если город выбран, выводим его название #}
+						    {% if city %}
+						      <a class="alert-link text-dark" href="{% url 'device_edit_city' region city dev.pk %}" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
+						        <img src="{% static "img/edit.png" %}" width="20" height="20">
+						      </a>
+						    {% else %}
+						      <a class="alert-link text-dark" href="{% url 'device_edit_reg' region dev.pk %}" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
+						        <img src="{% static "img/edit.png" %}" width="20" height="20">
+						      </a>
+						    {% endif %}
+
+						{# Если регион не выбран #}
+						{% else %}
+						    <a class="alert-link text-dark" href="{% url 'device_edit' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
+						      <img src="{% static "img/edit.png" %}" width="20" height="20">
+						    </a>
+						{% endif %}
+											{% endif %}	
 				</td>
 				<td>
 					<a href="{% url 'connections_on_dev' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Показать подключения на данном устройстве">
