@@ -1,0 +1,7 @@
+					{% if connection.comment|length > 35 %}
+						<div id="block_comment">
+							{{ connection.comment }}
+						</div>
+					{% else %}
+						{{ connection.comment }}
+					{% endif %}

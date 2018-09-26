@@ -36,7 +36,7 @@
 				<td bgcolor="{{ color }}">
 					<a href="{% url 'path_to_dev' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать путь до данного узла">{{ dev.ip }}</a> {{ dev.comment }}
 				</td>
-				<td>
+				<td colspan="2">
 					комментарий
 				</td>
 			</tr>
@@ -72,7 +72,7 @@
 					{% include 'port_block.html' %}
 				</td>
 				<td>
-					{{ connection.comment }}
+					{% include "comment_block.html" %}
 				</td>
 				<td>
 					{% if perms.connection_on_device.delete_connectionondevice %}
