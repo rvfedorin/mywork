@@ -6,14 +6,13 @@ from django.views.generic.base import ContextMixin
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
 from django.contrib import messages
-from django import forms
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-
-from models_device.models import Device, ModelDevices
+from models_device.models import Device
 from cities.models import Cities
 from connection_on_device.models import ConnectionOnDevice
+from models_device.forms import DeviceForm, DeviceDeleteForm
 
 # Create your views here.
 
@@ -112,21 +111,7 @@ class DeviceView(PathToCityMixin, ListView):
     paginate_by = 12
 
     def get_queryset(self):
-        return self._action_list[0]()
-
-
-
-class DeviceForm(forms.ModelForm):
-    class Meta:
-        model = Device
-        fields = ['model', 'ip', 'incoming_port', 'up_connect_ip', 'up_connect_port', 'city', 'comment']
-        error_messages = {'ip': {'unique': 'Устройство с таким IP уже существует.'}
-        }
-
-
-
-class DeviceDeleteForm(forms.Form):
-    device_to_delete = forms.IntegerField()
+        return self._action_list[0]()  # from PathToCityMixin
 
 
 class DeviceCreate(PathToCityMixin, TemplateView):

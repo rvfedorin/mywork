@@ -11,6 +11,7 @@ import re
 
 from connection_on_device.models import ConnectionOnDevice
 from models_device.models import Device
+from connection_on_device.forms import AddConnectionForm
 
 # Create your views here.
 
@@ -61,7 +62,6 @@ def on_device_get(request, id_dev):
     connections = sorted(connections, key=lambda x: x.port)
     
     return connections, dev
-
 
 
 def on_device(request, id_dev):
@@ -151,7 +151,6 @@ def all_connection_port(dev, connections_dev):
     return connections_dev
 
 
-
 def all_connection(request, id_dev):
     # get all connection on all devices from the needed device
     connections_dev = []
@@ -168,21 +167,6 @@ def all_connection(request, id_dev):
         "connections":connections, 
         "source":source_connect
         })
-
-
-class AddConnectionForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['port'].widget.attrs.update({'class': 'form-control'})
-        self.fields['connected'].widget.attrs.update({'class': 'form-control'})
-        self.fields['vlan'].widget.attrs.update({'class': 'form-control'})
-        self.fields['ip_client'].widget.attrs.update({'class': 'form-control'}, cols='20', rows='4')
-        self.fields['comment'].widget.attrs.update({'class': 'form-control'}, cols='20', rows='1')
-
-
-    class Meta:
-        model = ConnectionOnDevice
-        fields = ["port", "connected", "vlan", "ip_client", "comment"]
 
 
 class AddConnection(PermissionRequiredMixin, TemplateView):
@@ -244,8 +228,8 @@ class DelConnection(PermissionRequiredMixin, TemplateView):
         # send_mail(
         #     'Изменения в интранете.',
         #     mail_message,
-        #     'r.fedorin@orel.ptl.ru',
-        #     ['r.fedorin@orel.ptl.ru'],
+        #     'vvvvvv@mail.ru',
+        #     ['vvvvvv@mail.ru'],
         #     fail_silently=False,
         # )
 
