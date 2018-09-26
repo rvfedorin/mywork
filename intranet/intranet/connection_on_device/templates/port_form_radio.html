@@ -1,0 +1,21 @@
+							{% if 'RWR' in dev.model.type %}
+							<small class="form-text text-muted">{{ form.port.help_text }}</small>
+							<select id="getPort" onchange="ifRadioCheck(this);">
+								<option value="eth0">eth0</option>
+								<option value="eth1">eth1</option>
+							</select>
+							<script type="text/javascript">
+								function ifRadioCheck(nameSelect)
+									{
+									    console.log(nameSelect);
+									    if(nameSelect){
+									        $('#id_port').val(nameSelect.value)
+									    }
+									}
+							</script>
+							{{ form.port.as_hidden }}
+							
+							{% else %}
+							<small class="form-text text-muted">{{ form.port.help_text }}</small>
+							{{ form.port }}
+							{% endif %}

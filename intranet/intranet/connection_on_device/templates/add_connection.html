@@ -44,7 +44,7 @@
 					{{ connection.ip_client }}
 				</td>
 				<td>
-					{{ connection.port }}port{{ connection.vlan }}
+					{% include 'port_block.html' %}
 				</td>
 				<td>
 					{{ connection.comment }}
@@ -63,8 +63,7 @@
 							{{ form.ip_client }}
 						</td>
 						<td>
-							<small class="form-text text-muted">{{ form.port.help_text }}</small>
-							{{ form.port }}
+							{% include "port_form_radio.html" %}
 							<small class="form-text text-muted">{{ form.vlan.help_text }}</small>
 							{{ form.vlan }}
 						</td>

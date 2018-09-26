@@ -47,7 +47,6 @@ def on_device_get(request, id_dev):
                 connection.connected = f'UP to {dev.up_connect_port} port on {dev.model.type} {dev.up_connect_ip}'
         elif 'DOWN to ' in connection.connected:
             try:
-                print(connection.connected[8:])
                 down_dev = Device.objects.get(ip=connection.connected[8:])
                 connection.connected = (connection.connected, down_dev)
             except Device.DoesNotExist:
@@ -196,6 +195,7 @@ class AddConnection(PermissionRequiredMixin, TemplateView):
         self.connections, self.dev = on_device_get(request, self.kwargs['id_dev'])
 
         return super(AddConnection, self).get(request, *args, **kwargs)
+
 
     def get_context_data(self, *args, **kwargs):
         context = super(AddConnection, self).get_context_data(*args, **kwargs)

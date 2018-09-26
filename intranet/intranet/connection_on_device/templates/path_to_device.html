@@ -12,7 +12,7 @@
 						{% if forloop.last %}
 							:{{ dev.incoming_port }} <font size="4" color="red"><b>&#8596;</b></font> CISCO
 						{% else %}
-							:{{ dev.incoming_port }} <font size="4" color="red"><b>&#8596;</b></font> {{ dev.up_connect_port }}:
+							:{{ dev.incoming_port }}<font size="4" color="red"><b>&#8596;</b></font> {{ dev.up_connect_port }}:
 						{% endif %}
 					
 				{% endfor %}
