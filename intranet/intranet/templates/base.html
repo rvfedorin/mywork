@@ -41,7 +41,20 @@
               {% if perms.models_device.add_device %}
               <tr>
                 <td>
-                  <a class="alert-link text-dark" href="{% url 'device_add' %}">Добавить устройство</a>
+                  {% if region %}
+                  {# Если регион выбран, выводим его название #}
+                      
+                  {# Если город выбран, выводим его название #}
+                      {% if city %}
+                        <a class="alert-link text-dark" href="{% url 'device_add_city' region city %}">Добавить устройство</a>
+                      {% else %}
+                        <a class="alert-link text-dark" href="{% url 'device_add_reg' region %}">Добавить устройство</a>
+                      {% endif %}
+
+                  {# Если регион не выбран #}
+                  {% else %}
+                      <a class="alert-link text-dark" href="{% url 'device_add' %}">Добавить устройство</a>
+                  {% endif %}
                 </td>
               </tr>
               {% endif %}
@@ -81,7 +94,7 @@
         </div>
       </div>
     </main>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="{% static "js/jquery.js" %}"></script>
   <script src="{% static "js/popper.min.js" %}"></script>
   <script src="{% static "js/bootstrap.min.js" %}"></script>
     <script>

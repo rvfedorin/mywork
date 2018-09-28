@@ -9,28 +9,56 @@
 		
 {# Если город выбран, выводим его название #}
 		{% if city %}
-		<nav aria-label="breadcrumb">
-		  <ol class="breadcrumb">
-		  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Все регионы</a></li>
-		    <li class="breadcrumb-item"><a href="{% url 'dev_list_region' region %}">{{ region }}</a></li>
-		    <li class="breadcrumb-item active" aria-current="page">{{ city }} </li>
-		  </ol>
-		</nav>
-
+			<nav aria-label="breadcrumb">
+			  <ol class="breadcrumb">
+			  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Все регионы</a></li>&nbsp;/&nbsp;
+			  	<div class="btn-group">
+			  	<li class="breadcrumb-item dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			  		<a href="#">{{ region }}</a></li>&nbsp;/&nbsp;
+  				<div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+					{% for reg in regions %}
+								<a class="dropdown-item" href="{% url 'device' %}{{ reg }}/" title="Показать подключения в регионе {{ reg }}">
+									{{ reg }}
+								</a>
+					{% endfor %}
+				</div>
+</div><div class="btn-group">
+  				<li class="breadcrumb-item dropdown-toggle" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    				<a href="#"><b>{{ city }}</b></a>
+  				</li>
+  				<div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+					{% for city in cities %}
+							<a class="dropdown-item" href="{% url 'dev_list_city' region city.city %}" title="Показать подключения в городе {{ city.city }}">{{ city.city }}</a>
+					{% endfor %}
+				</div>
+			</div>
+			  </ol>
+			</nav>
 		{% else %}
 {# Если город не выбран, выводим список городов при выбранном регионе #}
 			<nav aria-label="breadcrumb">
 			  <ol class="breadcrumb">
-			  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Все регионы</a></li>
-			    <li class="breadcrumb-item active" aria-current="page">{{ region }} </li>
-	  				<li class="breadcrumb-item dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-	    				<a href="#">Выбрать город</a>
-	  				</li>
-	  				<div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-				{% for city in cities %}
-						<a class="dropdown-item" href="{% url 'dev_list_city' region city.city %}" title="Показать подключения в городе {{ city.city }}">{{ city.city }}</a>
-				{% endfor %}
-					</div>
+			  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Все регионы</a></li>&nbsp;/&nbsp;
+			  	<div class="btn-group">
+			  	<li class="breadcrumb-item dropdown-toggle" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			  		<a href="#"><b>{{ region }}</b></a></li>&nbsp;/&nbsp;
+  				<div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+					{% for reg in regions %}
+								<a class="dropdown-item" href="{% url 'device' %}{{ reg }}/" title="Показать подключения в регионе {{ reg }}">
+									{{ reg }}
+								</a>
+					{% endfor %}
+				</div>
+</div><div class="btn-group">
+  				<li class="breadcrumb-item dropdown-toggle" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    				<a href="#">Выбрать город</a>
+  				</li>
+  				<div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+					{% for city in cities %}
+							<a class="dropdown-item" href="{% url 'dev_list_city' region city.city %}" title="Показать подключения в городе {{ city.city }}">{{ city.city }}</a>
+					{% endfor %}
+				</div>
+			</div>
 			  </ol>
 			</nav>
 		{% endif %}
@@ -70,10 +98,27 @@
 			<tr>
 				<td>
 					{% if perms.models_device.change_device %}
-	          			<a class="alert-link text-dark" href="{% url 'device_edit' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
-							<img src="{% static "img/edit.png" %}" width="20" height="20">
-						</a>
-					{% endif %}	
+	          			{% if region %}
+						{# Если регион выбран, выводим его название #}
+						    
+						{# Если город выбран, выводим его название #}
+						    {% if city %}
+						      <a class="alert-link text-dark" href="{% url 'device_edit_city' region city dev.pk %}" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
+						        <img src="{% static "img/edit.png" %}" width="20" height="20">
+						      </a>
+						    {% else %}
+						      <a class="alert-link text-dark" href="{% url 'device_edit_reg' region dev.pk %}" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
+						        <img src="{% static "img/edit.png" %}" width="20" height="20">
+						      </a>
+						    {% endif %}
+
+						{# Если регион не выбран #}
+						{% else %}
+						    <a class="alert-link text-dark" href="{% url 'device_edit' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Редактировать устройство">
+						      <img src="{% static "img/edit.png" %}" width="20" height="20">
+						    </a>
+						{% endif %}
+											{% endif %}	
 				</td>
 				<td>
 					<a href="{% url 'connections_on_dev' dev.pk %}" data-toggle="tooltip" data-placement="top" title="Показать подключения на данном устройстве">

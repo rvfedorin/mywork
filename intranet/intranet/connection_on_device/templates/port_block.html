@@ -1,0 +1,6 @@
+
+					{% if 'RWR' in dev.model.type %}
+						{{ connection.port }} {{ connection.vlan }}
+					{% else %}
+						{{ connection.port }}port{{ connection.vlan }}
+					{% endif %}

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html" %} 
 {% load static %}
 
 {% block title %}Подключения{% endblock %}
@@ -6,9 +6,10 @@
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
 		  	<li class="breadcrumb-item"><a href="{% url 'device' %}">Список устройств</a></li>
-		    <li class="breadcrumb-item"><a href="{% url 'all_connection' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать все подключения от этого узла">
-									    	Показать все подключения от {{ dev.ip }}
-										</a>
+		    <li class="breadcrumb-item">
+		    	<a href="{% url 'all_connection' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать все подключения от этого узла">
+			    	Показать все подключения от {{ dev.ip }}
+				</a>
 			</li>
 		  </ol>
 		</nav>
@@ -35,18 +36,24 @@
 				<td bgcolor="{{ color }}">
 					<a href="{% url 'path_to_dev' dev.pk %}" data-toggle="tooltip" data-placement="right" title="Показать путь до данного узла">{{ dev.ip }}</a> {{ dev.comment }}
 				</td>
-				<td>
+				<td colspan="2">
 					комментарий
 				</td>
 			</tr>
 			{% for connection in connections %}
 			<tr>
 				<td>
-					{% if perms.connection_on_device.change_ConnectionOnDevice %}
-          			<a class="alert-link text-dark" 
-          			href="{% url 'edit_connection' dev.pk connection.pk %}" data-toggle="tooltip" data-placement="left" title="Редактировать подключение">
-						<img src="{% static "img/edit.png" %}" width="20" height="20">
-					</a>
+					{% if perms.connection_on_device.change_connectionondevice %}
+						{% if 'UP to' in connection.connected.0 or 'DOWN to' in connection.connected.0 %}
+						{%else%}
+							{% if 'UP to' in connection.connected %}
+							{%else%}
+		          			<a class="alert-link text-dark" 
+		          			href="{% url 'edit_connection' dev.pk connection.pk %}" data-toggle="tooltip" data-placement="left" title="Редактировать подключение">
+								<img src="{% static "img/edit.png" %}" width="20" height="20">
+							</a>
+							{% endif %}
+						{% endif %}
 					{% endif %}
 				</td>
 				<td>
@@ -54,6 +61,7 @@
 						<a href="{% url 'connections_on_dev' connection.connected.1.pk %}" data-toggle="tooltip" data-placement="top" 
 						title="Показать подключения на данном устройстве">{{ connection.connected.0 }}</a>
 					{% else %}
+
 						{{ connection.connected }}
 					{% endif %}
 				</td>
@@ -61,57 +69,60 @@
 					{{ connection.ip_client }}
 				</td>
 				<td>
-					{{ connection.port }}port{{ connection.vlan }}
+					{% include 'port_block.html' %}
 				</td>
 				<td>
-					{{ connection.comment }}
+					{% include "comment_block.html" %}
 				</td>
 				<td>
-					{% if perms.connection_on_device.delete_ConnectionOnDevice %}
-						<a href="" data-toggle="modal" data-target="#deleteModal{{ connection.pk }}" >
-							<img src="{% static "img/delete.png" %}" width="20" height="20"title="Удалить подключение">
-						</a>
+					{% if perms.connection_on_device.delete_connectionondevice %}
+						{% if 'UP to' in connection.connected.0 or 'DOWN to' in connection.connected.0 %}
+							{%else%}
+							<a href="" data-toggle="modal" data-target="#deleteModal{{ connection.pk }}" >
+								<img src="{% static "img/delete.png" %}" width="20" height="20"title="Удалить подключение">
+							</a>
 
-						<!-- Modal -->
-						<div class="modal fade" id="deleteModal{{ connection.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModal{{ connection.pk }}" aria-hidden="true">
-						  <div class="modal-dialog modal-dialog-centered" role="document">
-						    <div class="modal-content">
-						      <div class="modal-header">
-						        <h5 class="modal-title" id="deleteModal{{ connection.pk }}">Удаление подключения!!!</h5>
-						        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						          <span aria-hidden="true">&times;</span>
-						        </button>
-						      </div>
-						      <div class="modal-body">
-						        Удалить подключение:<br>
-						        <b>{{ connection.connected }}
-						        	{% if connection.ip_client > 0 %}
-						        		({{ connection.ip_client }})&nbsp;
-						        	{% endif %}
-						    		{{ connection.port }}port
-									{{ connection.vlan }}
-								</b>
-						      </div>
-						      <div class="modal-footer">
-						        <form action="{% url 'del_connection' dev.pk %}" method="post">
-									<div class="form-group">
-										<button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
-										{% csrf_token %}
-										<input type="hidden" name="connection_to_delete" value="{{ connection.pk }}">
-										<input class="btn btn-outline-danger" type="submit" name="del_connection" value="Удалить">
-									</div>
-								</form>
-						      </div>
-						    </div>
-						  </div>
-						</div>
+							<!-- Modal -->
+							<div class="modal fade" id="deleteModal{{ connection.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModal{{ connection.pk }}" aria-hidden="true">
+							  <div class="modal-dialog modal-dialog-centered" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <h5 class="modal-title" id="deleteModal{{ connection.pk }}">Удаление подключения!!!</h5>
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							          <span aria-hidden="true">&times;</span>
+							        </button>
+							      </div>
+							      <div class="modal-body">
+							        Удалить подключение:<br>
+							        <b>{{ connection.connected }}
+							        	{% if connection.ip_client > 0 %}
+							        		({{ connection.ip_client }})&nbsp;
+							        	{% endif %}
+							    		{{ connection.port }}port
+										{{ connection.vlan }}
+									</b>
+							      </div>
+							      <div class="modal-footer">
+							        <form action="{% url 'del_connection' dev.pk %}" method="post">
+										<div class="form-group">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
+											{% csrf_token %}
+											<input type="hidden" name="connection_to_delete" value="{{ connection.pk }}">
+											<input class="btn btn-outline-danger" type="submit" name="del_connection" value="Удалить">
+										</div>
+									</form>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+						{% endif %}
 					{% endif %}
 				</td>
 			</tr>
 			{% endfor %}
 			<tr>
 				<td colspan="5">
-					{% if perms.connection_on_device.add_ConnectionOnDevice %}
+					{% if perms.connection_on_device.add_connectionondevice %}
 					<a class="alert-link text-dark" href="{% url 'add_connection' dev.pk %}" data-toggle="tooltip" data-placement="top" title="добавить подключение">
 						<img src="{% static "img/add.png" %}" width="32" height="32">
 					</a>

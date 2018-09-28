@@ -130,3 +130,4 @@ LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'device'
 LOGOUT_REDIRECT_URL = 'device'
 
+

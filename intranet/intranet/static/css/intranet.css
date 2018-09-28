@@ -1,0 +1,12 @@
+#block_comment {
+/*	white-space: nowrap;  Запрещаем перенос строк */
+	overflow: hidden; /* Обрезаем все, что не помещается в область */
+	max-width: 250px; /* Ширина*/
+	height: 50px; /* Высота */
+	text-overflow: ellipsis; /* Добавляем многоточие */
+}
+
+#block_comment:hover {
+  height: auto;
+  cursor: pointer;
+}

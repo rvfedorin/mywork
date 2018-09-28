@@ -5,11 +5,13 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django import forms
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.mail import send_mail
 
 import re
 
 from connection_on_device.models import ConnectionOnDevice
 from models_device.models import Device
+from connection_on_device.forms import AddConnectionForm
 
 # Create your views here.
 
@@ -46,7 +48,6 @@ def on_device_get(request, id_dev):
                 connection.connected = f'UP to {dev.up_connect_port} port on {dev.model.type} {dev.up_connect_ip}'
         elif 'DOWN to ' in connection.connected:
             try:
-                print(connection.connected[8:])
                 down_dev = Device.objects.get(ip=connection.connected[8:])
                 connection.connected = (connection.connected, down_dev)
             except Device.DoesNotExist:
@@ -61,7 +62,6 @@ def on_device_get(request, id_dev):
     connections = sorted(connections, key=lambda x: x.port)
     
     return connections, dev
-
 
 
 def on_device(request, id_dev):
@@ -151,7 +151,6 @@ def all_connection_port(dev, connections_dev):
     return connections_dev
 
 
-
 def all_connection(request, id_dev):
     # get all connection on all devices from the needed device
     connections_dev = []
@@ -170,31 +169,17 @@ def all_connection(request, id_dev):
         })
 
 
-class AddConnectionForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['port'].widget.attrs.update({'class': 'form-control'})
-        self.fields['connected'].widget.attrs.update({'class': 'form-control'})
-        self.fields['vlan'].widget.attrs.update({'class': 'form-control'})
-        self.fields['ip_client'].widget.attrs.update({'class': 'form-control'}, cols='20', rows='4')
-        self.fields['comment'].widget.attrs.update({'class': 'form-control'}, cols='20', rows='1')
-
-
-    class Meta:
-        model = ConnectionOnDevice
-        fields = ["port", "connected", "vlan", "ip_client", "comment"]
-
-
 class AddConnection(PermissionRequiredMixin, TemplateView):
     form = None
     template_name = "add_connection.html"
-    permission_required = ('connection_on_device.can_add', )
+    permission_required = ('connection_on_device.add_connectionondevice', )
 
     def get(self, request, *args, **kwargs):
         self.form = AddConnectionForm()
         self.connections, self.dev = on_device_get(request, self.kwargs['id_dev'])
 
         return super(AddConnection, self).get(request, *args, **kwargs)
+
 
     def get_context_data(self, *args, **kwargs):
         context = super(AddConnection, self).get_context_data(*args, **kwargs)
@@ -228,7 +213,7 @@ class AddConnection(PermissionRequiredMixin, TemplateView):
 
 class DelConnection(PermissionRequiredMixin, TemplateView):
     form = None
-    permission_required = ('connection_on_device.can_delete', )
+    permission_required = ('connection_on_device.delete_connectionondevice', )
 
 
     def post(self, request, *args, **kwargs):
@@ -237,6 +222,16 @@ class DelConnection(PermissionRequiredMixin, TemplateView):
         self._to_del = ConnectionOnDevice.objects.get(pk=id_connection)
         self._to_del.delete()
         messages.add_message(request, messages.SUCCESS, f"<b>Подключение удалено.<br>{self._to_del}</b>")
+        # mail_message = f"""Удалено подключение:
+        #     {self._to_del}
+        #     """
+        # send_mail(
+        #     'Изменения в интранете.',
+        #     mail_message,
+        #     'vvvvvv@mail.ru',
+        #     ['vvvvvv@mail.ru'],
+        #     fail_silently=False,
+        # )
 
         return redirect('connections_on_dev', id_dev)
 
@@ -244,7 +239,7 @@ class DelConnection(PermissionRequiredMixin, TemplateView):
 class EditConnection(PermissionRequiredMixin, TemplateView):
     form = None
     template_name = 'edit_connection.html'
-    permission_required = ('connection_on_device.can_edit', )
+    permission_required = ('connection_on_device.change_connectionondevice', )
 
     def get(self, request, *args, **kwargs):
         self.id_con = self.kwargs['id_con']
@@ -267,7 +262,9 @@ class EditConnection(PermissionRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         self.form = AddConnectionForm(request.POST)
         if self.form.is_valid():
+            old_connection = ConnectionOnDevice.objects.get(pk=self.kwargs['id_con'])
             connection = ConnectionOnDevice.objects.get(pk=self.kwargs['id_con'])
+
             connection.id_dev = Device.objects.get(pk=self.kwargs['id_dev'])
             connection.port = self.form.cleaned_data['port']
             connection.connected = self.form.cleaned_data['connected']
@@ -276,6 +273,17 @@ class EditConnection(PermissionRequiredMixin, TemplateView):
             connection.comment = self.form.cleaned_data['comment']
             connection.save()
             messages.add_message(request, messages.SUCCESS, "Изменения приняты.")
+
+            mail_message = f"""Изменения приняты:
+            устройство({'без изменений' if old_connection.id_dev == connection.id_dev else '--- изменено ---'}): {connection.id_dev.ip} 
+            порт({'без изменений' if old_connection.port == connection.port else '--- изменено ---'}): {connection.port} 
+            подключение({'без изменений' if old_connection.connected == connection.connected else '--- изменено ---'}): {connection.connected} 
+            влан({'без изменений' if old_connection.vlan == connection.vlan else '--- изменено ---'}): {connection.vlan} 
+            ip клиента({'без изменений' if old_connection.ip_client == connection.ip_client else '--- изменено ---'}): {connection.ip_client} 
+            комментарий({'без изменений' if old_connection.comment == connection.comment else '--- изменено ---'}): {connection.comment} 
+            """
+
+
             return redirect('connections_on_dev', self.kwargs['id_dev'])
         else:
             return super(EditConnection, self).get(request, *args, **kwargs)

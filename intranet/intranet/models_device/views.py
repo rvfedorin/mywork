@@ -2,29 +2,24 @@ from django.shortcuts import render
 from django.http import HttpResponse, Http404
 from django.core.paginator import InvalidPage
 from django.views.generic.list import ListView
+from django.views.generic.base import ContextMixin
 from django.views.generic import TemplateView
 from django.shortcuts import redirect
 from django.contrib import messages
-from django import forms
 from django.contrib.auth.mixins import PermissionRequiredMixin
 
 
-from models_device.models import Device, ModelDevices
+from models_device.models import Device
 from cities.models import Cities
 from connection_on_device.models import ConnectionOnDevice
+from models_device.forms import DeviceForm, DeviceDeleteForm
 
 # Create your views here.
 
-
-
-class DeviceView(ListView):
-    template_name = "dev_list.html"
-    paginate_by = 12
-
-
+class PathToCityMixin(ContextMixin):
     def __init__(self, *args, **kwargs):
-        super(DeviceView, self).__init__(*args, **kwargs)
-
+        super(PathToCityMixin, self).__init__(*args, **kwargs)
+        
         self.regions = Cities.all_regions()
 
 
@@ -40,49 +35,59 @@ class DeviceView(ListView):
     def _region(self):
         reg_id = Cities.get_reg_id(self.kwargs["region"])
         all_dev = []
-        try:
-            reg = Cities.objects.filter(region=reg_id)
 
-        except Cities.DoesNotExist:
-            raise Http404('Device not found!')         
-
-        for _dev in reg:
+        for _dev in self.reg:
             all_dev += list(Device.objects.filter(city=_dev))
-
-        self.kwargs["cities"] = reg
 
         return all_dev
 
 
     def _all_dev(self):
-        self.kwargs["regions"] = self.regions
         return Device.objects.all().order_by('city')    
 
 
     def get(self, request, *args, **kwargs):
         current_user = request.user
         if "city" in self.kwargs:
-            self._action_list = [self._city, "city", "region"]
+            self._action_list = [self._city, "city", "region", "regions", "cities"]
+            self.kwargs["regions"] = self.regions
+            if Cities.get_reg_id(self.kwargs["region"]): # if there is such region
+                reg_id = Cities.get_reg_id(self.kwargs["region"])
+                try:
+                    self.reg = Cities.objects.filter(region=reg_id)
+                except Cities.DoesNotExist:
+                    raise Http404('Device not found!') 
+                self.kwargs["cities"] = self.reg
             try:
                 Cities.objects.get(city=self.kwargs["city"])
             except Cities.DoesNotExist: # if there is no such city
                 return redirect('device')
         elif "region" in self.kwargs:
-            self._action_list = [self._region, "cities", "region"]
-            if not Cities.get_reg_id(self.kwargs["region"]): # if there is no such region
+            self._action_list = [self._region, "cities", "region", "regions"]
+            if Cities.get_reg_id(self.kwargs["region"]): # if there is such region
+                reg_id = Cities.get_reg_id(self.kwargs["region"])
+                try:
+                    self.reg = Cities.objects.filter(region=reg_id)
+                except Cities.DoesNotExist:
+                    raise Http404('Device not found!') 
+                self.kwargs["cities"] = self.reg
+                self.kwargs["regions"] = self.regions
+            else:
                 return redirect('device')
         else:
             self._action_list = [self._all_dev, "regions"]
+            self.kwargs["regions"] = self.regions
             
-        return super(DeviceView, self).get(request, *args, **kwargs)
+        return super(PathToCityMixin, self).get(request, *args, **kwargs)
 
 
     def get_context_data(self, **kwargs):
-        self.context = super(DeviceView, self).get_context_data(**kwargs)
+        self.context = super(PathToCityMixin, self).get_context_data(**kwargs)
 
         for _key in self._action_list[1:]:
             self.context[_key] = self.kwargs[_key]
             # forming string view 'Region2 (Orel, Kursk, Voronezh)'
+            #
             # if _key == "regions":
             #     cities = []
             #     for region in self.regions:
@@ -99,25 +104,17 @@ class DeviceView(ListView):
         return self.context
 
 
+
+
+class DeviceView(PathToCityMixin, ListView):
+    template_name = "dev_list.html"
+    paginate_by = 12
+
     def get_queryset(self):
-        return self._action_list[0]()
+        return self._action_list[0]()  # from PathToCityMixin
 
 
-
-class DeviceForm(forms.ModelForm):
-    class Meta:
-        model = Device
-        fields = ['model', 'ip', 'incoming_port', 'up_connect_ip', 'up_connect_port', 'city', 'comment']
-        error_messages = {'ip': {'unique': 'Устройство с таким IP уже существует.'}
-        }
-
-
-
-class DeviceDeleteForm(forms.Form):
-    device_to_delete = forms.IntegerField()
-
-
-class DeviceCreate(TemplateView):
+class DeviceCreate(PathToCityMixin, TemplateView):
     form = None
     template_name = "device_add.html"
 
@@ -125,8 +122,12 @@ class DeviceCreate(TemplateView):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             if request.user.has_perm("models_device.add_device"):
-                print(request.user)
-                self.form = DeviceForm()
+                if "city" in self.kwargs:  # Если город определен, то выводим его в форме по умолчанию
+                    self.form = DeviceForm(initial={'city': Cities.objects.filter(city=self.kwargs["city"]).first()})
+                    print(self.kwargs["city"])
+                else:
+                    self.form = DeviceForm()
+
                 return super(DeviceCreate, self).get(request, *args, **kwargs)
             else:
                 return redirect("/login/?next=", request.path)
@@ -172,7 +173,7 @@ class DeviceCreate(TemplateView):
             return super(DeviceCreate, self).get(request, *args, **kwargs)
 
 
-class DeviceUpdate(PermissionRequiredMixin, TemplateView):
+class DeviceUpdate(PathToCityMixin, PermissionRequiredMixin, TemplateView):
     form = None
     template_name = 'device_edit.html'
     permission_required = ("models_device.change_device")

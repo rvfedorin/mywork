@@ -4,29 +4,18 @@
 {% block head %} Путь до {{ to_dev.ip }} {% endblock %}
 {% block main %}
 		<table class="table table-hover w-50">
-			<tr>
-				{% for dev, color in path %}
-					<td align="center">
-						{{ dev.model.type }}
-					</td>
-					<td>
 
-					</td>
-				{% endfor %}
-			</tr>
-			<tr>
+			<tr><td align="center">
 				{% for dev, color in path %}
-					<td align="center" bgcolor="{{ color }}">
-						<a href="{% url 'connections_on_dev' dev.pk %}" title="Показать подключения на данном устройстве">{{ dev.ip }}</a>
-					</td>
-					<td align="center">
+					
+						<a style="background: {{ color }}" href="{% url 'connections_on_dev' dev.pk %}" title="Показать подключения на данном устройстве">{{ dev.ip }}</a>
 						{% if forloop.last %}
-							- {{ dev.incoming_port }}port--CISCO
+							:{{ dev.incoming_port }} <font size="4" color="red"><b>&#8596;</b></font> CISCO
 						{% else %}
-							- {{ dev.incoming_port }}port --- {{ dev.up_connect_port }}port -
+							:{{ dev.incoming_port }}<font size="4" color="red"><b>&#8596;</b></font> {{ dev.up_connect_port }}:
 						{% endif %}
-					</td>
+					
 				{% endfor %}
-			</tr>
+			</tr></td>
 		</table>
 {% endblock %}

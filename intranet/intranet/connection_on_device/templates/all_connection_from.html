@@ -12,8 +12,8 @@
 {% endblock %}
 
 {% block main %}
-		<table class="table table-sm table-hover w-50">
-		{% for dev, color, connection in connections %}
+		<table class="table table-sm table-hover w-75">
+		{% for dev, color, connect in connections %}
 			<thead>
 			<tr>
 				<th bgcolor="{{ color }}">
@@ -30,19 +30,19 @@
 				</th>	
 			</tr>
 		</thead>
-			{% for connect in connection %}
+			{% for connection in connect %}
 			<tr>
 				<td>
-					{{ connect.connected }}
+					{{ connection.connectioned }}
 				</td>
 				<td>
-					{{ connect.ip_client }}
+					{{ connection.ip_client }}
 				</td>
 				<td>
-					{{ connect.port }}port{{ connect.vlan }}
+					{{ connection.port }}port{{ connection.vlan }}
 				</td>
 				<td>
-					{{ connect.comment }}
+					{% include "comment_block.html" %}
 				</td>
 			</tr>
 			{% endfor %}
