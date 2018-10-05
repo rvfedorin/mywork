@@ -110,8 +110,19 @@ class DeviceView(PathToCityMixin, ListView):
     template_name = "dev_list.html"
     paginate_by = 12
 
+
     def get_queryset(self):
-        return self._action_list[0]()  # from PathToCityMixin
+        search_query = self.request.GET.get('search', '')
+        result = []
+        if search_query:
+            result_search = ConnectionOnDevice.objects.filter(connected__icontains=search_query)
+            for i in result_search:
+                print(i.id_dev, '--------------')
+                id_dev = i.id_dev
+                # result += list(Device.objects.filter(id=id_dev))
+            return self._action_list[0]()
+        else:
+            return self._action_list[0]()  # from PathToCityMixin
 
 
 class DeviceCreate(PathToCityMixin, TemplateView):

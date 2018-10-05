@@ -6,8 +6,6 @@
     </content>
     <orderEntry type="jdk" jdkName="Python 3.7 (GitHub)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="work" />
-    <orderEntry type="module" module-name="coupe_count" />
   </component>
   <component name="TestRunnerService">
     <option name="PROJECT_TEST_RUNNER" value="Unittests" />
