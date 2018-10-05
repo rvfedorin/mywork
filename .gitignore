@@ -1,3 +1,4 @@
 *.xml
 *.pyc
 /intranet/**/__pycache__
+.idea/mywork.iml
