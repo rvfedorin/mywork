@@ -117,10 +117,8 @@ class DeviceView(PathToCityMixin, ListView):
         if search_query:
             result_search = ConnectionOnDevice.objects.filter(connected__icontains=search_query)
             for i in result_search:
-                print(i.id_dev, '--------------')
-                id_dev = i.id_dev
-                # result += list(Device.objects.filter(id=id_dev))
-            return self._action_list[0]()
+                result.append(i.id_dev)
+            return result
         else:
             return self._action_list[0]()  # from PathToCityMixin
 
