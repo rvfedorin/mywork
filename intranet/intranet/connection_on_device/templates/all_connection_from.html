@@ -15,6 +15,13 @@
 		<table class="table table-sm table-hover w-75">
 		{% for dev, color, connect in connections %}
 			<thead>
+				{% if forloop.first %}
+					<tr>
+						<td colspan="4">
+							<b>Подключения в {{ dev.city.get_region_display}} ОП {{ dev.city.city }}</b>
+					</td>
+					</tr>
+				{% endif %}
 			<tr>
 				<th bgcolor="{{ color }}">
 					{{ dev.model.type }}&nbsp;{{ dev.model.model }}
