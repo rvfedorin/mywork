@@ -24,26 +24,55 @@ class PathToCityMixin(ContextMixin):
 
 
     def _city(self):
+        search_query = self.request.GET.get('search', '')
+        result = []
+        result_search = []
         try:
-            reg = Cities.objects.filter(city=self.kwargs["city"]).first()
+            city_obj = Cities.objects.filter(city=self.kwargs["city"]).first()
         except Cities.DoesNotExist:
             raise Http404('Device not found!') 
 
-        return Device.objects.filter(city=reg)
+        if search_query:
+            for dev in list(Device.objects.filter(city=city_obj)):
+                result_search += list(ConnectionOnDevice.objects.filter(id_dev=dev).filter(connected__icontains=search_query))
+            for i in result_search:
+                result.append(i.id_dev)
+            return result
+        else:
+            return Device.objects.filter(city=city_obj)
 
 
     def _region(self):
         reg_id = Cities.get_reg_id(self.kwargs["region"])
+        search_query = self.request.GET.get('search', '')
+        result = []
         all_dev = []
+        result_search = []
+        
 
-        for _dev in self.reg:
-            all_dev += list(Device.objects.filter(city=_dev))
-
-        return all_dev
+        if search_query:
+            for _city in self.reg:
+                for dev in list(Device.objects.filter(city=_city)):
+                    result_search += list(ConnectionOnDevice.objects.filter(id_dev=dev).filter(connected__icontains=search_query))
+            for i in result_search:
+                result.append(i.id_dev)
+            return result
+        else:
+            for _city in self.reg:
+                all_dev += list(Device.objects.filter(city=_city))
+            return all_dev
 
 
     def _all_dev(self):
-        return Device.objects.all().order_by('city')    
+        search_query = self.request.GET.get('search', '')
+        result = []
+        if search_query:
+            result_search = ConnectionOnDevice.objects.filter(connected__icontains=search_query)
+            for i in result_search:
+                result.append(i.id_dev)
+            return result
+        else:
+            return Device.objects.all().order_by('city')    
 
 
     def get(self, request, *args, **kwargs):
@@ -112,15 +141,7 @@ class DeviceView(PathToCityMixin, ListView):
 
 
     def get_queryset(self):
-        search_query = self.request.GET.get('search', '')
-        result = []
-        if search_query:
-            result_search = ConnectionOnDevice.objects.filter(connected__icontains=search_query)
-            for i in result_search:
-                result.append(i.id_dev)
-            return result
-        else:
-            return self._action_list[0]()  # from PathToCityMixin
+        return self._action_list[0]()  # from PathToCityMixin
 
 
 class DeviceCreate(PathToCityMixin, TemplateView):
