@@ -1,0 +1,9 @@
+					{% if request.GET.search %}
+					<tr><td colspan="4"></td></tr>
+						<tr>
+							<td colspan="3">
+							{% load myfilters %}
+							{{ object_list.1|index:forloop.counter0 }}
+							</td>
+						</tr>
+					{% endif %}

@@ -5,6 +5,7 @@
 {% block head %}
 
 	{% if region %}
+
 {# Если регион выбран, выводим его название #}
 		
 {# Если город выбран, выводим его название #}
@@ -94,7 +95,8 @@
 			{% endfor %}
 		{% endif %}
 			<table class="table table-sm table-hover w-50">
-			{% for dev in object_list %}
+			{% for dev in object_list.0 %}
+					{% include 'if_search.html' %}
 			<tr>
 				<td>
 					{% if perms.models_device.change_device %}

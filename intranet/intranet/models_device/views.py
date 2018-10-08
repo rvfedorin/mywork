@@ -37,9 +37,9 @@ class PathToCityMixin(ContextMixin):
                 result_search += list(ConnectionOnDevice.objects.filter(id_dev=dev).filter(connected__icontains=search_query))
             for i in result_search:
                 result.append(i.id_dev)
-            return result
+            return [result, result_search]
         else:
-            return Device.objects.filter(city=city_obj)
+            return [Device.objects.filter(city=city_obj)]
 
 
     def _region(self):
@@ -56,11 +56,11 @@ class PathToCityMixin(ContextMixin):
                     result_search += list(ConnectionOnDevice.objects.filter(id_dev=dev).filter(connected__icontains=search_query))
             for i in result_search:
                 result.append(i.id_dev)
-            return result
+            return [result, result_search]
         else:
             for _city in self.reg:
                 all_dev += list(Device.objects.filter(city=_city))
-            return all_dev
+            return [all_dev]
 
 
     def _all_dev(self):
@@ -70,9 +70,9 @@ class PathToCityMixin(ContextMixin):
             result_search = ConnectionOnDevice.objects.filter(connected__icontains=search_query)
             for i in result_search:
                 result.append(i.id_dev)
-            return result
+            return [result, result_search]
         else:
-            return Device.objects.all().order_by('city')    
+            return [Device.objects.all().order_by('city')]    
 
 
     def get(self, request, *args, **kwargs):
