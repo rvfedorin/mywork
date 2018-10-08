@@ -24,7 +24,7 @@ class PathToCityMixin(ContextMixin):
 
 
     def _city(self):
-        search_query = self.request.GET.get('search', '')
+        search_query = self.request.GET.get('search', '').strip()
         result = []
         result_search = []
         try:
@@ -44,7 +44,7 @@ class PathToCityMixin(ContextMixin):
 
     def _region(self):
         reg_id = Cities.get_reg_id(self.kwargs["region"])
-        search_query = self.request.GET.get('search', '')
+        search_query = self.request.GET.get('search', '').strip()
         result = []
         all_dev = []
         result_search = []
@@ -64,7 +64,7 @@ class PathToCityMixin(ContextMixin):
 
 
     def _all_dev(self):
-        search_query = self.request.GET.get('search', '')
+        search_query = self.request.GET.get('search', '').strip()
         result = []
         if search_query:
             result_search = ConnectionOnDevice.objects.filter(connected__icontains=search_query)
