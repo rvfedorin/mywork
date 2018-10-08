@@ -23,40 +23,68 @@ class PathToCityMixin(ContextMixin):
         self.regions = Cities.all_regions()
 
 
-    def _city(self):
-        search_query = self.request.GET.get('search', '').strip()
+    def search(self, reg=False, cit=False):
         result = []
         result_search = []
-        try:
-            city_obj = Cities.objects.filter(city=self.kwargs["city"]).first()
-        except Cities.DoesNotExist:
-            raise Http404('Device not found!') 
+        search_query = self.request.GET.get('search', '').strip()
+        only_dev = self.request.GET.get('only_dev', '').strip()
+        city_obj = cit
 
-        if search_query:
+        if only_dev:  # если ищем только девайс, то нужен поиск только в else
+            reg=False
+            cit=False
+
+        if cit:
             for dev in list(Device.objects.filter(city=city_obj)):
                 result_search += list(ConnectionOnDevice.objects.filter(id_dev=dev).filter(connected__icontains=search_query))
             for i in result_search:
                 result.append(i.id_dev)
             return [result, result_search]
-        else:
-            return [Device.objects.filter(city=city_obj)]
-
-
-    def _region(self):
-        reg_id = Cities.get_reg_id(self.kwargs["region"])
-        search_query = self.request.GET.get('search', '').strip()
-        result = []
-        all_dev = []
-        result_search = []
-        
-
-        if search_query:
+        elif reg:
             for _city in self.reg:
                 for dev in list(Device.objects.filter(city=_city)):
                     result_search += list(ConnectionOnDevice.objects.filter(id_dev=dev).filter(connected__icontains=search_query))
             for i in result_search:
                 result.append(i.id_dev)
             return [result, result_search]
+
+        else:
+            if only_dev:  # если ищем только устройство
+                result_search = Device.objects.filter(ip=search_query)
+            else:
+                result_search = ConnectionOnDevice.objects.filter(connected__icontains=search_query)
+
+            for i in result_search:
+                if only_dev:  # если ищем только устройство, добавляем его в результат
+                    result.append(i)
+                else:  # если ищем в подключениях - добавляем устройства, с которых подключено
+                    result.append(i.id_dev)
+
+            return (result, result_search)
+
+
+    def _city(self):
+        search_query = self.request.GET.get('search', '').strip()
+
+        try:
+            city_obj = Cities.objects.filter(city=self.kwargs["city"]).first()
+        except Cities.DoesNotExist:
+            raise Http404('Device not found!') 
+
+        if search_query:
+            result, result_search = self.search(cit=city_obj)
+            return [result, result_search]  
+        else:
+            return [Device.objects.filter(city=city_obj)]
+
+
+    def _region(self):
+        all_dev = []
+        search_query = self.request.GET.get('search', '').strip()
+        
+        if search_query:
+            result, result_search = self.search(reg=True)
+            return [result, result_search]  
         else:
             for _city in self.reg:
                 all_dev += list(Device.objects.filter(city=_city))
@@ -65,12 +93,10 @@ class PathToCityMixin(ContextMixin):
 
     def _all_dev(self):
         search_query = self.request.GET.get('search', '').strip()
-        result = []
-        if search_query:
-            result_search = ConnectionOnDevice.objects.filter(connected__icontains=search_query)
-            for i in result_search:
-                result.append(i.id_dev)
-            return [result, result_search]
+        
+        if search_query:  # если задана строка поиска
+            result, result_search = self.search()
+            return [result, result_search]  
         else:
             return [Device.objects.all().order_by('city')]    
 

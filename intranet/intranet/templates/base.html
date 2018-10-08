@@ -19,9 +19,9 @@
           <div class="col">
             {% if region %}
               {% if city %}
-                <form class="form-inline mt-2 mt-md-0" action="{% url 'dev_list_city' region city %}">
+                <form action="{% url 'dev_list_city' region city %}">
               {% else %}
-                <form class="form-inline mt-2 mt-md-0" action="{% url 'dev_list_region' region %}">
+                <form action="{% url 'dev_list_region' region %}">
               {% endif %}  
             {% else %}
             <form action="{% url 'dev_list' %}">
@@ -32,7 +32,7 @@
             </div>
             <div class="form-group  my-sm-0">
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="gridCheck">
+                <input class="form-check-input" type="checkbox" id="gridCheck" name="only_dev">
                 <label class="form-check-label" for="gridCheck">Искать устройство</label>
               </div>
             </div>
